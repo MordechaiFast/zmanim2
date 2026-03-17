@@ -7,14 +7,14 @@
 - Cache the city name and coordinates/timezone
 - Sanatize Palestinian locations
 - Show the zmain for that place and time
-- Should calculate and display the mardgin of error, how much earlier or latter the zman could be under resonable weather conditions
+- Should calculate and display the margin of error, how much earlier or latter the zman could be under resonable weather conditions
 - Should provide a link to Itim Labina for exact sunrise/sunset
 - Should allow setting of the twilight times from dropdown menues
 - Should allow for displaying GRA or MGA times, by sun position or fixed proportion
 - Should produce monthly and yearly tables
 
-## Style improvements
+## Edge cases
 
-- Have input lables next to inputs, not above
-- Put submit button next to the date
-- Show zmanim and details for default location on page load
+### Artic times:
+- Defalut on non-existant summer twilight times with midnight
+- Non-existant sunrise and sunset, find a good filler

@@ -39,6 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
       showError(err.message || String(err));
     }
   });
+  
+  document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
 
 function showError(msg) {

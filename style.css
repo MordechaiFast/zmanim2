@@ -37,14 +37,17 @@ form {
 
 .form-group {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
 }
 
 .form-group label {
     font-weight: 600;
     color: #333;
     font-size: 0.95rem;
+    white-space: nowrap;
+    min-width: 70px;
 }
 
 .form-group input {
@@ -53,11 +56,23 @@ form {
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
+    flex: 1px;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: #667eea;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.form-group-row .form-group {
+  flex: 1px;
+  margin: 0px;
 }
 
 .btn-submit {
@@ -70,7 +85,8 @@ form {
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-top: 10px;
+    margin-top: 0px;
+    height: fit-content;
 }
 
 .btn-submit:hover {
