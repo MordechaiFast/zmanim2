@@ -2,7 +2,7 @@ const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
 const alotDeg = 19.75, misheyakirDeg = 11.5, tzeitDeg = 4.61, shabbatDeg = 8.5;
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('city').value = "בית המקדש"
+  document.getElementById('city').value = localStorage.getItem('lastCity') || "בית המקדש";
   document.getElementById('date').valueAsDate = new Date(); // default to today
 
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
       showError('City is required.');
       return;
     }
+    // Try to save input
+    try {
+      localStorage.setItem('lastCity', city);
+    } catch (err) {
+      // localStorage may be unavailable; continue without caching
+    } 
 
     try {
       const cityData = (city == "בית המקדש")

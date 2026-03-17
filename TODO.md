@@ -4,9 +4,12 @@
 
 - Should be able to accept either the city name or the coordinates
 - Should be able to accept either hebrew or english date
+
 - Cache the city name and coordinates/timezone
 - Sanatize Palestinian locations
 - Show the zmain for that place and time
+
+- Should include midnight for end of that day
 - Should calculate and display the margin of error, how much earlier or latter the zman could be under resonable weather conditions
 - Should provide a link to Itim Labina for exact sunrise/sunset
 - Should allow setting of the twilight times from dropdown menues
