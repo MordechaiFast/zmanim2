@@ -9,7 +9,9 @@ async function getCityDataCached(city, apiKey) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       console.log('Using cached data for:', city);
-      return cached.json();
+      const json = cached.json();
+      console.log('Cached data:', json);
+      return json;
     }
   } catch (err) {
     // Query the API if not in cache
