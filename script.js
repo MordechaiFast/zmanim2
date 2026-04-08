@@ -11,11 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKey = api_key_3; // using the imported key from keys.js
     const city = document.getElementById('city').value.trim();
     const dateStr = document.getElementById('date').value; // YYYY-MM-DD
- 
-    if (!city) {
-      showError('City is required.');
-      return;
-    }
     // Try to save input
     try {
       localStorage.setItem('lastCity', city);
@@ -61,7 +56,7 @@ function clearError() {
 const evening = true;
 const zmanim = {
   "עלות השחר": (date, location) => twilightAngle(date, location, alotDeg),
-	"משיכיר": (date, location) => twilightAngle(date, location, misheyakirDeg),
+  "משיכיר": (date, location) => twilightAngle(date, location, misheyakirDeg),
   "הנץ החמה": (date, location) => twilightAngle(date, location, 50/60),
   "סוף זמן קריאת שמע": (date, location) => temporalHour(date, location, 3),
   "סוף זמן תפילה": (date, location) => temporalHour(date, location, 4),
@@ -73,6 +68,7 @@ const zmanim = {
   "שקיעת החמה": (date, location) => twilightAngle(date, location, 50/60, evening),
   "צאת הכוכבים": (date, location) => twilightAngle(date, location, tzeitDeg, evening),
   "צאת שבת": (date, location) => twilightAngle(date, location, shabbatDeg, evening),
+  "חצות הלילה": (date, location) => twilightAngle(date, location, 90, evening),
 }
 
 function displayCard(city, dateStr, locationData) {
@@ -109,9 +105,11 @@ function displayCard(city, dateStr, locationData) {
   zmanimBody.innerHTML = '';
   for (let zman in zmanim) {
     const row = document.createElement('tr');
+    let timeStr = zmanim[zman](dateStr, locationData).toLocaleTimeString("he", {timeZone: locationData.timezone});
+    if (timeStr == 'Invalid Date') timeStr = "--:--";
     row.innerHTML = `
       <td>${zman}</td>
-      <td dir='ltr'>${zmanim[zman](dateStr, locationData).toLocaleTimeString("he", {timeZone: locationData.timezone})}</td>
+      <td dir='ltr'>${timeStr}</td>
     `;
     zmanimBody.appendChild(row);
   }

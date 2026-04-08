@@ -8,8 +8,8 @@
 - Cache the city name and coordinates/timezone
 - Sanatize Palestinian locations
 - Show the zmain for that place and time
+- Includes midnight for end of that day
 
-- Should include midnight for end of that day
 - Should calculate and display the margin of error, how much earlier or latter the zman could be under resonable weather conditions
 - Should provide a link to Itim Labina for exact sunrise/sunset
 - Should allow setting of the twilight times from dropdown menues
@@ -19,5 +19,5 @@
 ## Edge cases
 
 ### Artic times:
-- Defalut on non-existant summer twilight times with midnight
-- Non-existant sunrise and sunset, find a good filler
+- Defaluts on non-existant summer twilight times with midnight
+- Non-existant sunrise and sunset, shows --:--

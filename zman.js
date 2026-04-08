@@ -1,4 +1,4 @@
-// By Mordechai Fast
+// (c) by Mordechai Fast
 
 const radToDeg = a => a * (180 / Math.PI);
 const degToRad = a => a * (Math.PI / 180);
@@ -249,6 +249,8 @@ function twilightTime(elevation, evening, date, location) {
     previous = current;
     let {declination, equationOfTime} = SunPosition(current);
     let hourAngle = calcHourAngle(location.lat, elevation, declination);
+    if (isNaN(hourAngle))
+      hourAngle = (location.lat + elevation - declination > 90 ? 0 : 180);
     hourAngle *= (evening ? 1 : -1);
     let time = 720 + 4 * (hourAngle + location.long - equationOfTime);
     current = JulianDay + time / 1440; // Convert minutes to days
@@ -256,42 +258,8 @@ function twilightTime(elevation, evening, date, location) {
   return JDtoDate(current);
 }
 
-/** Calculates the temporal hour as a fraction from sunrise to sunset */
-function temporalHourS(hour, date, location) {
-  const sunrise = twilightTime(-5/6, false, date, location);
-  const sunset = twilightTime(-5/6, true, date, location);
-  return sunrise + (sunset - sunrise) / 12 * hour;
-}
-
-/** Calculates the temporal hour as a fraction from dawn to dusk */
-function temporalHourD(hour, date, location, dawnElevation) {
-  const dawn = twilightTime(-dawnElevation, false, date, location);
-  const dusk = twilightTime(-dawnElevation, true, date, location);
-  return dawn + (dusk - dawn) / 12 * hour;
-}
-
-/** Finds the geometric time of a temporal hour */
-function temporalHourG(hour, date, location) {
-  hour -= 6;
-  const latitude = location.lat;
-  const JulianDay = calcJD(date.year, date.month, date.day); // Julian Day at midnight UTC
-  let previous = 0;
-  let current = JulianDay + .5 + location.long / 360; // Start at noon LST
-  while (Math.abs(previous - current) > 1/(84000 * 10)) {
-    previous = current;
-    let {declination, equationOfTime} = SunPosition(current);
-    let horizonAngle = calcHourAngle(latitude, 0, declination);
-    if (isNaN(horizonAngle)) 
-      horizonAngle = (latitude - declination > 90 ? 0 : 180);
-    let hourAngle = horizonAngle * hour / 6;
-    let time = 720 + 4 * (hourAngle + location.long - equationOfTime);
-    current = JulianDay + time / 1440; // Convert minutes to days
-  }
-  return JDtoDate(current);
-}
-
 /** Calculates the temporal hour accounting for refraction */
-function temporalHourR(hour, date, location, atmospheric = {}, dawnElevation=0) {
+function temporalHourR(hour, date, location, atmospheric={}, dawnElevation=0) {
   hour -= 6;
   /**The apparent latitude accounting for the refraction of celestrial pole */
   const latitude = location.lat + calcRefraction(location.lat);
@@ -319,6 +287,40 @@ function temporalHourR(hour, date, location, atmospheric = {}, dawnElevation=0) 
   return JDtoDate(current);
 }
 
+/** Calculates the temporal hour as a fraction from sunrise to sunset */
+function temporalHourS(hour, date, location) {
+  const sunrise = twilightTime(-5/6, false, date, location);
+  const sunset = twilightTime(-5/6, true, date, location);
+  return sunrise + (sunset - sunrise) / 12 * hour;
+}
+
+/** Calculates the temporal hour as a fraction from dawn to dusk */
+function temporalHourD(hour, date, location, dawnElevation) {
+  const dawn = twilightTime(-dawnElevation, false, date, location);
+  const dusk = twilightTime(-dawnElevation, true, date, location);
+  return dawn + (dusk - dawn) / 12 * hour;
+}
+
+/** Finds the geometric time of a temporal hour *
+function temporalHourG(hour, date, location) {
+  hour -= 6;
+  const latitude = location.lat;
+  const JulianDay = calcJD(date.year, date.month, date.day); // Julian Day at midnight UTC
+  let previous = 0;
+  let current = JulianDay + .5 + location.long / 360; // Start at noon LST
+  while (Math.abs(previous - current) > 1/(84000 * 10)) {
+    previous = current;
+    let {declination, equationOfTime} = SunPosition(current);
+    let horizonAngle = calcHourAngle(latitude, 0, declination);
+    if (isNaN(horizonAngle)) 
+      horizonAngle = (latitude - declination > 90 ? 0 : 180);
+    let hourAngle = horizonAngle * hour / 6;
+    let time = 720 + 4 * (hourAngle + location.long - equationOfTime);
+    current = JulianDay + time / 1440; // Convert minutes to days
+  }
+  return JDtoDate(current);
+}
+*/
 
 // Testing
 /*
