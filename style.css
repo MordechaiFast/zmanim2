@@ -1,6 +1,38 @@
 :root{
   --max-width: 900px;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+
+  color-scheme: light dark;
+
+  --color-page-bg: #f6f8fa;
+  --color-text: #111827;
+  --color-surface: #ffffff;
+  --color-surface-soft: #fbfdff;
+  --color-border-soft: #eef2f7;
+  --color-label: #333333;
+  --color-input-border: #e0e0e0;
+  --color-input-focus: #667eea;
+  --color-error: #b91c1c;
+  --shadow-main: 0 6px 20px rgba(0,0,0,0.06);
+  --shadow-form: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --shadow-results: 0 6px 18px rgba(15,23,42,0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-page-bg: #0b1220;
+    --color-text: #e5e7eb;
+    --color-surface: #111827;
+    --color-surface-soft: #0f172a;
+    --color-border-soft: #1f2937;
+    --color-label: #d1d5db;
+    --color-input-border: #334155;
+    --color-input-focus: #8b9dff;
+    --color-error: #fca5a5;
+    --shadow-main: 0 10px 30px rgba(0,0,0,0.45);
+    --shadow-form: 0 10px 36px rgba(0, 0, 0, 0.45);
+    --shadow-results: 0 8px 24px rgba(0,0,0,0.40);
+  }
 }
 
 body{
@@ -10,23 +42,23 @@ body{
   justify-content: center;
   min-height: 100vh;
   margin: 0;
-  background: #f6f8fa;
-  color: #111827;
+  background: var(--color-page-bg);
+  color: var(--color-text);
 }
 
 main{
   width: min(92vw, var(--max-width));
-  background: white;
+  background: var(--color-surface);
   padding: 1.25rem;
   border-radius: 8px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-main);
 }
 
 .form-section {
-    background: white;
+    background: var(--color-surface);
     border-radius: 12px;
     padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-form);
 }
 
 form {
@@ -44,7 +76,7 @@ form {
 
 .form-group label {
     font-weight: 600;
-    color: #333;
+    color: var(--color-label);
     font-size: 0.95rem;
     white-space: nowrap;
     min-width: 70px;
@@ -52,16 +84,18 @@ form {
 
 .form-group input {
     padding: 12px 16px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--color-input-border);
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
     flex: 1px;
+    background: var(--color-surface-soft);
+    color: var(--color-text);
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--color-input-focus);
 }
 
 .form-group-row {
@@ -110,7 +144,7 @@ form {
 
 #error{
   margin-top: 0.6rem;
-  color: #b91c1c;
+  color: var(--color-error);
 }
 
 .results-card{
@@ -119,8 +153,8 @@ form {
   align-items: stretch;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(15,23,42,0.08);
-  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  box-shadow: var(--shadow-results);
+  background: linear-gradient(180deg, var(--color-surface), var(--color-surface-soft));
 }
 
 .card-left{
@@ -130,7 +164,7 @@ form {
   justify-content:center;
   align-items:flex-start;
   gap:0.6rem;
-  border-right: 1px solid #eef2f7;
+  border-right: 1px solid var(--color-border-soft);
   padding-right: 1rem;
 }
 
