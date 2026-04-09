@@ -8,18 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     clearError();
+    
     const apiKey = api_key_3; // using the imported key from keys.js
     const city = document.getElementById('city').value.trim();
-    const dateStr = document.getElementById('date').value; // YYYY-MM-DD
     // Try to save input
     try {
       localStorage.setItem('lastCity', city);
     } catch (err) {
       // localStorage may be unavailable; continue without caching
-    } 
-
+    }
+    
+    const cityData = {};
     try {
-      const cityData = (city == "בית המקדש")
+      cityData = (city == "בית המקדש")
         ? {
             lat: MIKDASH_LAT,
             lon: MIKDASH_LON,
@@ -27,18 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
             local_names: { he: "בית המקדש" }
           }
         : await getCityDataCached(city, apiKey);
-      // Hebresize data
-      if (cityData.country === 'PS') cityData.country = 'IL';
-      const { name, state, country } = cityData;
-      const fullCityName = country === 'IL'
-        ? cityData.local_names.he
-        : `${name}${state ? ', ' + state : ''}, ${country}`;
-      if (country === 'IL') cityData.timezone = 'Asia/Jerusalem';
-
-      displayCard(fullCityName, dateStr, cityData);
     } catch (err) {
       showError(err.message || String(err));
     }
+
+    //Todo: allow displayCard to be called with the cityData without re-calling the search funcitons
+    displayCard(cityData);
   });
   
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
@@ -71,7 +66,15 @@ const zmanim = {
   "חצות הלילה": (date, location) => twilightAngle(date, location, 90, evening),
 }
 
-function displayCard(city, dateStr, locationData) {
+function displayCard(cityData) {
+  // Hebresize data
+  if (cityData.country === 'PS') cityData.country = 'IL';
+  const { name, state, country } = cityData;
+  const city = (country === 'IL')
+    ? cityData.local_names.he
+    : `${name}${state ? ', ' + state : ''}, ${country}`;
+  if (country === 'IL') cityData.timezone = 'Asia/Jerusalem';
+
   const dateOptions = {
     weekday: "long",
     year: "numeric",
@@ -79,25 +82,27 @@ function displayCard(city, dateStr, locationData) {
     day: "numeric",
   };
   const timeOptions = {
-    timeZone: locationData.timezone,
+    timeZone: cityData.timezone,
     timeZoneName: "long",
     hour12: false,
   };
+
+  const dateStr = document.getElementById('date').value; // YYYY-MM-DD
   const date = new Date(dateStr);
 
   document.getElementById('results').hidden = false;
   
   document.getElementById('card-city').textContent = city;
   document.getElementById('card-coords').textContent = 
-    `${latStr(locationData.lat)} ${longStr(locationData.lon)}`;
+    `${latStr(cityData.lat)} ${longStr(cityData.lon)}`;
   document.getElementById('card-direction').textContent = 
-    greatCircleDirection(locationData.lat, locationData.lon, MIKDASH_LAT, MIKDASH_LON);
+    greatCircleDirection(cityData.lat, cityData.lon, MIKDASH_LAT, MIKDASH_LON);
 
   document.getElementById('card-date').textContent = 
     date.toLocaleDateString(undefined, dateOptions);
   document.getElementById('card-tz').textContent = (
     date.toLocaleTimeString(undefined, timeOptions).match(/\s+(.+)/)[1]
-    + ` (${formatOffset(getOffsetMinutes(locationData.timezone, date))})`);
+    + ` (${formatOffset(getOffsetMinutes(cityData.timezone, date))})`);
   document.getElementById('card-hebrew-date').textContent = 
     hebrewDate(date);
 
@@ -105,12 +110,9 @@ function displayCard(city, dateStr, locationData) {
   zmanimBody.innerHTML = '';
   for (let zman in zmanim) {
     const row = document.createElement('tr');
-    let timeStr = zmanim[zman](dateStr, locationData).toLocaleTimeString("he", {timeZone: locationData.timezone});
+    let timeStr = zmanim[zman](dateStr, cityData).toLocaleTimeString("he", {timeZone: cityData.timezone});
     if (timeStr == 'Invalid Date') timeStr = "--:--";
-    row.innerHTML = `
-      <td>${zman}</td>
-      <td dir='ltr'>${timeStr}</td>
-    `;
+    row.innerHTML = `<td>${zman}</td><td dir='ltr'>${timeStr}</td>`;
     zmanimBody.appendChild(row);
   }
 }
