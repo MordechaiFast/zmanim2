@@ -8,7 +8,7 @@ async function getCityDataCached(city, apiKey) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
       console.log('Using cached data for:', city);
-      const json = cached.json();
+      const json = JSON.parse(cached);
       console.log('Cached data:', json);
       return json;
     }
@@ -22,7 +22,7 @@ async function getCityDataCached(city, apiKey) {
     throw new Error('No data for this city.');
   }
   let { name, state, country, lat, lon } = geoData[0];
-  let local_names = { he: geoData[0].local_names.he };
+  let local_names = { he: geoData[0].local_names?.he };
 
   const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
   const weatherData = await getWeatherData(weatherUrl);

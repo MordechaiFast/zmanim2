@@ -4,7 +4,7 @@ const alotDeg = 19.75, misheyakirDeg = 11.5, tzeitDeg = 4.61, shabbatDeg = 8.5;
 document.addEventListener('DOMContentLoaded', () => {
   let currentCityData = null;
 
-  document.getElementById('city').value = localStorage.getItem('lastCity') || "בית המקדש";
+  document.getElementById('city').value = localStorage.getItem('lastCity') || '';
   document.getElementById('date').valueAsDate = new Date(); // default to today
 
   const findCity = async () => {
@@ -19,15 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // localStorage may be unavailable; continue without caching
     }
     try {
-      currentCityData = (city == "בית המקדש")
-        ? {
-            lat: MIKDASH_LAT,
-            lon: MIKDASH_LON,
-            timezone: 'Asia/Jerusalem',
-            country: 'IL',
-            local_names: { he: "בית המקדש" }
-          }
-        : await getCityDataCached(city, apiKey);
+      currentCityData = city ? await getCityDataCached(city, apiKey) : {
+        lat: MIKDASH_LAT,
+        lon: MIKDASH_LON,
+        timezone: 'Asia/Jerusalem',
+        country: 'IL',
+        local_names: { he: "בית המקדש" }
+      };
     } catch (err) {
       showError(err.message || String(err));
     }
