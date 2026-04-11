@@ -1,6 +1,5 @@
 const GEO_URL = "https://api.openweathermap.org/geo/1.0/direct";
 const ONECALL_URL = "https://api.openweathermap.org/data/3.0/onecall";
-
 async function getCityDataCached(city, apiKey) {
   const cacheKey = `geoData_${city.toLowerCase()}`;
   
@@ -22,14 +21,22 @@ async function getCityDataCached(city, apiKey) {
   if (!geoData || geoData.length === 0) {
     throw new Error('No data for this city.');
   }
-  const cityData = geoData[0];
+  let { name, state, country, lat, lon } = geoData[0];
+  let local_names = { he: geoData[0].local_names.he };
 
-  const weatherUrl = buildWeatherQuery(cityData.lat, cityData.lon, apiKey);
+  const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
   const weatherData = await getWeatherData(weatherUrl);
-  
-  cityData.timezone = weatherData.timezone;
-  // Store in localStorage for future use
+  let timezone = weatherData.timezone;
+
+  // Hebresize data
+  if (country === 'PS') {
+    country = 'IL';
+    timezone = 'Asia/Jerusalem';
+  }
+
+  const cityData = { name, state, country, local_names, lat, lon, timezone };
   try {
+    // Store in localStorage for future use
     localStorage.setItem(cacheKey, JSON.stringify(cityData));
   } catch (err) {
     // localStorage may be unavailable; continue without caching

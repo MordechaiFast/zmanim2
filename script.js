@@ -2,11 +2,12 @@ const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
 const alotDeg = 19.75, misheyakirDeg = 11.5, tzeitDeg = 4.61, shabbatDeg = 8.5;
 
 document.addEventListener('DOMContentLoaded', () => {
+  let currentCityData = null;
+
   document.getElementById('city').value = localStorage.getItem('lastCity') || "בית המקדש";
   document.getElementById('date').valueAsDate = new Date(); // default to today
 
-  document.getElementById('input-form').addEventListener('submit', async (ev) => {
-    ev.preventDefault();
+  const findCity = async () => {
     clearError();
     
     const apiKey = api_key_3; // using the imported key from keys.js
@@ -17,13 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       // localStorage may be unavailable; continue without caching
     }
-    
-    const cityData = {};
     try {
-      cityData = (city == "בית המקדש")
+      currentCityData = (city == "בית המקדש")
         ? {
             lat: MIKDASH_LAT,
             lon: MIKDASH_LON,
+            timezone: 'Asia/Jerusalem',
             country: 'IL',
             local_names: { he: "בית המקדש" }
           }
@@ -31,17 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       showError(err.message || String(err));
     }
+  };
 
-    //Todo: allow displayCard to be called with the cityData without re-calling the search funcitons
-    displayCard(cityData);
+  document.getElementById('input-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    await findCity();
+    if (currentCityData) {
+      displayCard(currentCityData);
+    }
+  });
+
+  document.getElementById('date').addEventListener('change', () => {
+    if (currentCityData) {
+      clearError();
+      displayCard(currentCityData);
+    }
   });
   
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
 
 function showError(msg) {
-  const errorField = document.getElementById('error');
-  errorField.textContent = msg;
+  document.getElementById('error').textContent = msg;
 }
 
 function clearError() {
@@ -67,13 +78,10 @@ const zmanim = {
 }
 
 function displayCard(cityData) {
-  // Hebresize data
-  if (cityData.country === 'PS') cityData.country = 'IL';
   const { name, state, country } = cityData;
   const city = (country === 'IL')
     ? cityData.local_names.he
     : `${name}${state ? ', ' + state : ''}, ${country}`;
-  if (country === 'IL') cityData.timezone = 'Asia/Jerusalem';
 
   const dateOptions = {
     weekday: "long",
