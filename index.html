@@ -15,29 +15,67 @@
   <main>
     <section id="form-section">
       <form id="input-form">
-        <div class="form-group-row">
+        <div class="input-modes" role="tablist" aria-label="Location input mode">
+          <button type="button" class="mode-tab is-active" id="mode-city" data-mode="city" role="tab" aria-selected="true" aria-controls="city-pane">City name</button>
+          <button type="button" class="mode-tab" id="mode-coords" data-mode="coords" role="tab" aria-selected="false" aria-controls="coords-pane">Coordinates</button>
+        </div>
+
+        <div class="input-panes">
+          <section class="input-pane is-active" id="city-pane" data-mode="city" role="tabpanel" aria-labelledby="mode-city">
+            <div class="form-group">
+              <label for="city">City:</label>
+              <input
+                type="text"
+                id="city"
+                name="city"
+                placeholder="Enter city name"
+              >
+            </div>
+            <p id="city-mode-result" class="mode-result">Coordinates for the selected city will appear on the right.</p>
+          </section>
+
+          <section class="input-pane" id="coords-pane" data-mode="coords" role="tabpanel" aria-labelledby="mode-coords" aria-hidden="true">
+            <div class="form-group form-group-coords">
+              <label for="lat">Latitude:</label>
+              <input
+                type="number"
+                id="lat"
+                name="lat"
+                inputmode="decimal"
+                min="-90"
+                max="90"
+                step="any"
+                placeholder="e.g. 31.7780"
+              >
+            </div>
+            <div class="form-group form-group-coords">
+              <label for="lon">Longitude:</label>
+              <input
+                type="number"
+                id="lon"
+                name="lon"
+                inputmode="decimal"
+                min="-180"
+                max="180"
+                step="any"
+                placeholder="e.g. 35.2353"
+              >
+            </div>
+            <p id="coords-mode-result" class="mode-result">City lookup by coordinates can be added here with your API call.</p>
+          </section>
+        </div>
+
+        <div class="form-footer-row">
           <div class="form-group">
-            <label for="city">City:</label>
-            <input 
-              type="text" 
-              id="city" 
-              name="city" 
-              placeholder="Enter city name" 
+            <label for="date">Date:</label>
+            <input
+              type="date"
+              id="date"
+              name="date"
               required
             >
           </div>
-          <div class="form-group"></div>
-          <button type="submit" class="btn-submit">Find city</button>
-        </div>
-
-        <div class="form-group">
-          <label for="date">Date:</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            required
-          >
+          <button type="submit" class="btn-submit" id="find-btn">Find city</button>
         </div>
       </form>
       <div id="error" role="alert" aria-live="polite"></div>
@@ -59,6 +97,7 @@
             <thead></thead>
             <tbody id="zmanim-body">
             </tbody>
+          </table>
         </div>
       </div>
     </section>
