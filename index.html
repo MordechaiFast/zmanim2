@@ -15,7 +15,8 @@
   <main>
     <section id="form-section">
       <form id="input-form">
-        <div class="form-group">
+        <div class="form-group-row">
+          <div class="form-group">
             <label for="city">City:</label>
             <input 
               type="text" 
@@ -24,19 +25,19 @@
               placeholder="Enter city name" 
               required
             >
+          </div>
+          <div class="form-group"></div>
+          <button type="submit" class="btn-submit">Find city</button>
         </div>
 
-        <div class="form-group-row">
-          <div class="form-group">
-            <label for="date">Date:</label>
-            <input 
-              type="date" 
-              id="date" 
-              name="date" 
-              required
-            >
-          </div>         
-          <button type="submit" class="btn-submit">Calculate Zmanim</button>
+        <div class="form-group">
+          <label for="date">Date:</label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            required
+          >
         </div>
       </form>
       <div id="error" role="alert" aria-live="polite"></div>

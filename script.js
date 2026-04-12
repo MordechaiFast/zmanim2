@@ -4,7 +4,7 @@ const alotDeg = 19.75, misheyakirDeg = 11.5, tzeitDeg = 4.61, shabbatDeg = 8.5;
 document.addEventListener('DOMContentLoaded', () => {
   let currentCityData = null;
 
-  document.getElementById('city').value = localStorage.getItem('lastCity') || '';
+  document.getElementById('city').value = localStorage.getItem('lastCity');
   document.getElementById('date').valueAsDate = new Date(); // default to today
 
   const findCity = async () => {
