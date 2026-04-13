@@ -12,12 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const apiKey = api_key_3; // using the imported key from keys.js
     const city = document.getElementById('city').value.trim();
-    // Try to save input
-    try {
-      localStorage.setItem('lastCity', city);
-    } catch (err) {
-      // localStorage may be unavailable; continue without caching
-    }
     try {
       currentCityData = city ? await getCityDataCached(city, apiKey) : {
         lat: MIKDASH_LAT,
@@ -29,11 +23,44 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       showError(err.message || String(err));
     }
+    try {
+      // Try to save input
+      localStorage.setItem('lastCity', city);
+    } catch (err) {
+      // localStorage may be unavailable; continue without caching
+    }
   };
 
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     await findCity();
+    if (currentCityData) {
+      displayCard(currentCityData);
+    }
+  });
+  
+  const findLoc = async () => {
+    clearError();
+    
+    const apiKey = api_key_3;
+    const lat = document.getElementById('lat').value;
+    const lon = document.getElementById('lon').value;
+    try {
+      currentCityData = await getLocData(lat, lon, apiKey);
+    } catch (err) {
+      showError(err.message || String(err));
+    }
+    try {
+      // Try to save input
+      localStorage.setItem('lastCity', currentCityData.name);
+    } catch (err) {
+      // localStorage may be unavailable; continue without caching
+    }
+  };
+
+  document.getElementById('coords-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    await findLoc();
     if (currentCityData) {
       displayCard(currentCityData);
     }
@@ -98,9 +125,13 @@ function displayCard(cityData) {
 
   document.getElementById('results').hidden = false;
   
-  document.getElementById('card-city').textContent = city;
-  document.getElementById('card-coords').textContent = 
-    `${latStr(cityData.lat)} ${longStr(cityData.lon)}`;
+  document.getElementById('city').value = city;
+  const latElmt = document.getElementById('lat');
+  latElmt.type = 'text';
+  latElmt.value = latStr(cityData.lat);
+  const lonElmt = document.getElementById('lon');
+  lonElmt.type = 'text';
+  lonElmt.value = longStr(cityData.lon);
   document.getElementById('card-direction').textContent = 
     greatCircleDirection(cityData.lat, cityData.lon, MIKDASH_LAT, MIKDASH_LON);
 

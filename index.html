@@ -26,10 +26,37 @@
               required
             >
           </div>
-          <div class="form-group"></div>
           <button type="submit" class="btn-submit">Find city</button>
         </div>
-
+      </form>
+      <form id="coords-form">
+        <div class="form-group-row">
+          <div class="form-group">
+            <label for="lat">Latitude:</label>
+            <input
+              type="number"
+              id="lat"
+              name="lat"
+              inputmode="decimal"
+              min="-90"
+              max="90"
+              step="any"
+              placeholder="e.g. 31.7780"
+            >
+            <label for="lon">Longitude:</label>
+            <input
+              type="number"
+              id="lon"
+              name="lon"
+              inputmode="decimal"
+              min="-180"
+              max="180"
+              step="any"
+              placeholder="e.g. 35.2353"
+            >
+          </div>
+          <button type="submit" class="btn-submit">Find Location</button>
+        </div>
         <div class="form-group">
           <label for="date">Date:</label>
           <input
@@ -46,8 +73,6 @@
     <section id="results">
       <div id="results-card" class="results-card" aria-live="polite">
         <div class="card-left">
-          <div class="city" id="card-city"></div>
-          <span id="card-coords"></span>
           <strong>Davening Direction:</strong> <span id="card-direction"></span>
           <strong>Timezone:</strong> <span id="card-tz"></span>
           <strong>Date:</strong> <span id="card-date"></span>
