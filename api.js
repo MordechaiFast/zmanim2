@@ -49,23 +49,26 @@ async function getCityDataCached(city, apiKey) {
 }
 
 async function getLocData(lat, lon, apiKey) {
+  let name, state, country, local_names, timezone; 
   const geoUrl = buildNameQuery(lat, lon, apiKey);
-  const geoData = await getGeoData(geoUrl);
-  
-  let name, state, country, local_names; 
-  if (!geoData || geoData.length === 0) {
-    name = "Unknown location";
-  } else {
-    name = geoData[0].name;
-    state = geoData[0].state;
-    country = geoData[0].country;
-    local_names = { he: geoData[0].local_names?.he };
-  }
-  
   const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
-  const weatherData = await getWeatherData(weatherUrl);
-  let timezone = weatherData.timezone;
-
+  
+  try {
+    const geoData = await getGeoData(geoUrl);
+    if (!geoData || geoData.length === 0) {
+      name = "Unknown location";
+    } else {
+      name = geoData[0].name;
+      state = geoData[0].state;
+      country = geoData[0].country;
+      local_names = { he: geoData[0].local_names?.he };
+    }
+    const weatherData = await getWeatherData(weatherUrl);
+    timezone = weatherData.timezone;
+  } catch (err) {
+    name = "Unknown location"; 
+    timezone = formatOffset(Math.round(lon / 15) * 60);
+  }
   // Hebresize data
   if (country === 'PS') {
     country = 'IL';

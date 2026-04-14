@@ -2,7 +2,8 @@
 
 ## Page goals
 
-- Should be able to accept either the city name or the coordinates
+- Can accept either the city name or the coordinates
+
 - Should be able to accept either hebrew or english date
 
 - Cache the city name and coordinates/timezone

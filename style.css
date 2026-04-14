@@ -35,23 +35,33 @@
   }
 }
 
-body{
+body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   margin: 0;
   background: var(--color-page-bg);
   color: var(--color-text);
+  padding-top: 2rem;
 }
 
-main{
+main {
   width: min(92vw, var(--max-width));
   background: var(--color-surface);
   padding: 1.25rem;
   border-radius: 8px;
   box-shadow: var(--shadow-main);
+}
+
+h1 {
+  text-align: center;
+  margin: 0 0 1.5rem 0;
+  font-size: 2rem;
+  color: var(--color-text);
+  width: min(92vw, var(--max-width));
 }
 
 .form-section {
@@ -88,9 +98,14 @@ form {
     border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
-    flex: 1px;
+    flex: 1;
     background: var(--color-surface-soft);
     color: var(--color-text);
+}
+
+.form-group input[type="number"] {
+    width: 150px;
+    flex: 0 0 auto;
 }
 
 .form-group input:focus {
@@ -105,7 +120,7 @@ form {
 }
 
 .form-group-row .form-group {
-  flex: 1px;
+  flex: 1;
   margin: 0px;
 }
 
