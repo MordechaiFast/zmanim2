@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     clearError();
     
     const apiKey = api_key_3;
-    const lat = document.getElementById('lat').value;
-    const lon = document.getElementById('lon').value;
+    const lat = Number(document.getElementById('lat').value);
+    const lon = Number(document.getElementById('lon').value);
     try {
       currentCityData = await getLocData(lat, lon, apiKey);
     } catch (err) {
@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('date').addEventListener('change', () => {
     if (currentCityData) {
-      clearError();
       displayCard(currentCityData);
     }
   });
@@ -125,13 +124,9 @@ function displayCard(cityData) {
 
   document.getElementById('results').hidden = false;
   
-  document.getElementById('city').value = city;
-  const latElmt = document.getElementById('lat');
-  latElmt.type = 'text';
-  latElmt.value = latStr(cityData.lat);
-  const lonElmt = document.getElementById('lon');
-  lonElmt.type = 'text';
-  lonElmt.value = longStr(cityData.lon);
+  document.getElementById('card-city').textContent = city;
+  document.getElementById('card-coords').textContent =
+   `${latStr(cityData.lat)} ${longStr(cityData.lon)}`;
   document.getElementById('card-direction').textContent = 
     greatCircleDirection(cityData.lat, cityData.lon, MIKDASH_LAT, MIKDASH_LON);
 
