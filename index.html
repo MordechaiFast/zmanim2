@@ -57,15 +57,6 @@
           </div>
           <button type="submit" class="btn-submit">Find Location</button>
         </div>
-        <div class="form-group">
-          <label for="date">Date:</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            required
-          >
-        </div>
       </form>
       <div id="error" role="alert" aria-live="polite"></div>
     </section>
@@ -76,9 +67,18 @@
           <div class="city" id="card-city"></div>
           <span id="card-coords"></span>
           <strong>Davening Direction:</strong> <span id="card-direction"></span>
-          <strong>Timezone:</strong> <span id="card-tz"></span>
-          <strong>Date:</strong> <span id="card-date"></span>
+          <div class="form-group">
+            <label for="date"><strong>Date:</strong></label>
+            <input
+                type="date"
+                id="date"
+                name="date"
+                required
+            >
+          </div>
+          <span id="card-date"></span>
           <span id="card-hebrew-date"></span>
+          <strong>Timezone:</strong> <span id="card-tz"></span>
         </div>
 
         <div class="card-right">

@@ -105,7 +105,7 @@ function displayCard(cityData) {
   const { name, state, country } = cityData;
   const city = (country === 'IL')
     ? cityData.local_names.he
-    : `${name}${state ? ', ' + state : ''}, ${country}`;
+    : `${name}${state ? ', ' + state : ''}${country ? ', ' + country : ''}`;
 
   const dateOptions = {
     weekday: "long",

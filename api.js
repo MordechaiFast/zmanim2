@@ -51,12 +51,17 @@ async function getCityDataCached(city, apiKey) {
 async function getLocData(lat, lon, apiKey) {
   const geoUrl = buildNameQuery(lat, lon, apiKey);
   const geoData = await getGeoData(geoUrl);
+  
+  let name, state, country, local_names; 
   if (!geoData || geoData.length === 0) {
-    throw new Error('No data for this city.');
+    name = "Unknown location";
+  } else {
+    name = geoData[0].name;
+    state = geoData[0].state;
+    country = geoData[0].country;
+    local_names = { he: geoData[0].local_names?.he };
   }
-  let { name, state, country } = geoData[0];
-  let local_names = { he: geoData[0].local_names?.he };
-
+  
   const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
   const weatherData = await getWeatherData(weatherUrl);
   let timezone = weatherData.timezone;
