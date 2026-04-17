@@ -3,22 +3,11 @@ const ONECALL_URL = "https://api.openweathermap.org/data/3.0/onecall";
 const REVERSE_URL = "http://api.openweathermap.org/geo/1.0/reverse";
 
 async function getCityDataCached(city, apiKey) {
-  const cacheKey = `geoData_${city.toLowerCase()}`;
-  
   try {
-    // Check if data is already in localStorage
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      console.log('Using cached data for:', city);
-      const json = JSON.parse(cached);
-      console.log('Cached data:', json);
-      return json;
-    }
+    return loadCityData(city)
   } catch (err) {
-    console.log(err);
-    // Query the API if not in cache
+      // Call API if not in local storage
   }
-
   const geoUrl = buildGeoQuery(city, apiKey);
   const geoData = await getGeoData(geoUrl);
   if (!geoData || geoData.length === 0) {
@@ -38,14 +27,36 @@ async function getCityDataCached(city, apiKey) {
   }
 
   const cityData = { name, state, country, local_names, lat, lon, timezone };
+  persistCityData(cityData, city);
+  return cityData;
+}
+
+function loadCityData(city) {
+  const cacheKey = `geoData_${city.toLowerCase()}`;
+  
+  try {
+    // Check if data is already in localStorage
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      console.log('Using cached data for:', city);
+      const json = JSON.parse(cached);
+      console.log('Cached data:', json);
+      return json;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+    
+}
+function persistCityData(cityData, city) {
+  if (!city) city = cityData.name;
+  const cacheKey = `geoData_${city.toLowerCase()}`;
   try {
     // Store in localStorage for future use
     localStorage.setItem(cacheKey, JSON.stringify(cityData));
   } catch (err) {
     // localStorage may be unavailable; continue without caching
   }  
-
-  return cityData;
 }
 
 async function getLocData(lat, lon, apiKey) {
@@ -76,14 +87,7 @@ async function getLocData(lat, lon, apiKey) {
   }
 
   const cityData = { name, state, country, local_names, lat, lon, timezone };
-  const cacheKey = `geoData_${name.toLowerCase()}`; 
-  try {
-    // Store in localStorage for future use
-    localStorage.setItem(cacheKey, JSON.stringify(cityData));
-  } catch (err) {
-    // localStorage may be unavailable; continue without caching
-  }  
-
+  persistCityData(cityData);
   return cityData;
 }
 
