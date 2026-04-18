@@ -90,6 +90,59 @@
             <thead></thead>
             <tbody id="zmanim-body">
             </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section id="settings">
+    
+      <div class="settings-card">
+        <h2>Settings</h2>
+        <div class="settings-grid">
+          <fieldset class="settings-group">
+            <legend>Temporal Hour Method</legend>
+            <label class="choice-row">
+              <input type="checkbox" id="setting-sun-position" checked>
+              <span>זמנים by actual sun position</span>
+            </label>
+            <p class="settings-note">Not by fixed proportions of the day</p>
+            <br>
+            <label class="choice-row">
+              <input type="radio" name="gra-mga" id="setting-gra" value="GRA" checked>
+              <span>גר"א/לבוש Hours - Sunrise to Sunset</span>
+            </label>
+            <label class="choice-row">
+              <input type="radio" name="gra-mga" id="setting-mga" value="MGA">
+              <span>מג"א/רמב"ן Hours - Dawn to Dusk</span>
+            </label>
+          </fieldset>
+    
+          <fieldset class="settings-group">
+            <legend>Twilight Angles</legend>
+            <div class="form-group">
+              <label for="setting-alot">עלות השחר</label>
+              <select id="setting-alot">
+                <option value="19.75">19.75° (90 min)</option>
+                <option value="16.1" selected>16.1° (72 min)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="setting-misheyakir">משיכיר</label>
+              <select id="setting-misheyakir">
+                <option value="11.5">11.5°</option>
+                <option value="11">11°</option>
+                <option value="10.5" selected>10.5°</option>
+              </select>
+            </div>
+            <div class="form-group">  
+              <label for="setting-tzeit">צאת הכוכבים</label>
+              <select id="setting-tzeit">
+                <option value="3.65">3.65° (13.5 min)</option>
+                <option value="4.61" selected>4.61° (18 min)</option>
+                <option value="6.45">6.45°</option>
+              </select>
+            </div>
+          </fieldset>
         </div>
       </div>
     </section>

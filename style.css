@@ -190,9 +190,78 @@ form {
 
 .card-right{
   flex:1;
+  flex-direction:column;
   padding-left:1rem;
   display:flex;
-  align-items:center;
+  align-items:end;
+}
+
+#settings{
+  margin-top: 1rem;
+}
+
+.settings-card{
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: var(--shadow-results);
+  background: linear-gradient(180deg, var(--color-surface), var(--color-surface-soft));
+}
+
+.settings-card h2{
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.settings-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.settings-group{
+  margin: 0;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.settings-group legend{
+  padding: 0 0.35rem;
+  font-weight: 700;
+}
+
+.choice-row{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-group label{
+  font-weight: 600;
+  color: var(--color-label);
+}
+
+.settings-group select{
+  padding: 0.6rem 0.8rem;
+  border: 2px solid var(--color-input-border);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.settings-group select:focus{
+  outline: none;
+  border-color: var(--color-input-focus);
+}
+
+.settings-note{
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-label);
 }
 
 /* responsive */

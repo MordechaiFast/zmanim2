@@ -291,14 +291,18 @@ function temporalHourR(hour, date, location, atmospheric={}, dawnElevation=0) {
 function temporalHourS(hour, date, location) {
   const sunrise = twilightTime(-5/6, false, date, location);
   const sunset = twilightTime(-5/6, true, date, location);
-  return sunrise + (sunset - sunrise) / 12 * hour;
+  const sunriseMs = sunrise.getTime();
+  const sunsetMs = sunset.getTime();
+  return new Date(sunriseMs + (sunsetMs - sunriseMs) / 12 * hour);
 }
 
 /** Calculates the temporal hour as a fraction from dawn to dusk */
 function temporalHourD(hour, date, location, dawnElevation) {
   const dawn = twilightTime(-dawnElevation, false, date, location);
   const dusk = twilightTime(-dawnElevation, true, date, location);
-  return dawn + (dusk - dawn) / 12 * hour;
+  const dawnMs = dawn.getTime();
+  const duskMs = dusk.getTime();
+  return new Date(dawnMs + (duskMs - dawnMs) / 12 * hour);
 }
 
 /** Finds the geometric time of a temporal hour *

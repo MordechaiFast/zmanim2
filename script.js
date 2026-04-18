@@ -1,34 +1,38 @@
 const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
-const alotDeg = 19.75, misheyakirDeg = 11.5, tzeitDeg = 4.61, shabbatDeg = 8.5;
+const shabbatDeg = 8.5;
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentCityData = null;
-
-  document.getElementById('city').value = localStorage.getItem('lastCity');
-  document.getElementById('date').valueAsDate = new Date(); // default to today
+  initialize(loadCity(), loadSettings());
 
   const findCity = async () => {
     clearError();
     
     const apiKey = api_key_3; // using the imported key from keys.js
     const city = document.getElementById('city').value.trim();
-    try {
-      currentCityData = city ? await getCityDataCached(city, apiKey) : {
+    if (!city) {
+      currentCityData = {
+        name: '',
         lat: MIKDASH_LAT,
         lon: MIKDASH_LON,
         timezone: 'Asia/Jerusalem',
         country: 'IL',
         local_names: { he: "בית המקדש" }
       };
-    } catch (err) {
-      showError(err.message || String(err));
+      return;        
     }
     try {
-      // Try to save input
-      localStorage.setItem('lastCity', city);
+      currentCityData = loadCityData(city);
     } catch (err) {
-      // localStorage may be unavailable; continue without caching
+      // Call API if not in local storage
+      try {
+        currentCityData = await getCityDataCached(city, apiKey);
+      } catch (err) {
+        showError(err.message || String(err));
+      }
     }
+    persistCity(city);
+    persistCityData(currentCityData, city);
   };
 
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
@@ -41,21 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   const findLoc = async () => {
     clearError();
-    
     const apiKey = api_key_3;
     const lat = Number(document.getElementById('lat').value);
     const lon = Number(document.getElementById('lon').value);
-    try {
-      currentCityData = await getLocData(lat, lon, apiKey);
-    } catch (err) {
-      showError(err.message || String(err));
-    }
-    try {
-      // Try to save input
-      localStorage.setItem('lastCity', currentCityData.name);
-    } catch (err) {
-      // localStorage may be unavailable; continue without caching
-    }
+    currentCityData = await getLocData(lat, lon, apiKey);
+    persistCity(currentCityData.name);
+    persistCityData(currentCityData, city);
   };
 
   document.getElementById('coords-form').addEventListener('submit', async (ev) => {
@@ -71,6 +66,15 @@ document.addEventListener('DOMContentLoaded', () => {
       displayCard(currentCityData);
     }
   });
+
+  document.querySelectorAll('#settings input, #settings select').forEach((control) => {
+    control.addEventListener('change', () => {
+      persistSettings();
+      if (currentCityData) {
+        displayCard(currentCityData);
+      }
+    });
+  });
   
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
@@ -83,29 +87,89 @@ function clearError() {
   document.getElementById('error').textContent = '';
 }
 
-const evening = true;
-const zmanim = {
-  "עלות השחר": (date, location) => twilightAngle(date, location, alotDeg),
-  "משיכיר": (date, location) => twilightAngle(date, location, misheyakirDeg),
-  "הנץ החמה": (date, location) => twilightAngle(date, location, 50/60),
-  "סוף זמן קריאת שמע": (date, location) => temporalHour(date, location, 3),
-  "סוף זמן תפילה": (date, location) => temporalHour(date, location, 4),
-  "חצות היום": (date, location) => temporalHour(date, location, 6),
-  "מנחה גדולה": (date, location) => temporalHour(date, location, 6.5),
-  "סמוך למנחה": (date, location) => temporalHour(date, location, 9),
-  "מנחה קטנה": (date, location) => temporalHour(date, location, 9.5),
-  "פלג המנחה": (date, location) => temporalHour(date, location, 10.75),
-  "שקיעת החמה": (date, location) => twilightAngle(date, location, 50/60, evening),
-  "צאת הכוכבים": (date, location) => twilightAngle(date, location, tzeitDeg, evening),
-  "צאת שבת": (date, location) => twilightAngle(date, location, shabbatDeg, evening),
-  "חצות הלילה": (date, location) => twilightAngle(date, location, 90, evening),
+function initialize(city, settings) {
+  document.getElementById('city').value = city;
+  document.getElementById('date').valueAsDate = new Date(); // default to today
+  document.getElementById('setting-sun-position').checked = settings.bySunPosition;
+  document.querySelector(`input[name="gra-mga"][value="${settings.graMga}"]`).checked = true;
+  document.getElementById('setting-alot').value = String(settings.twilightAngles.alot);
+  document.getElementById('setting-misheyakir').value = String(settings.twilightAngles.misheyakir);
+  document.getElementById('setting-tzeit').value = String(settings.twilightAngles.tzeit);
+}
+
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem('zmanimSettings'));
+  } catch (err) {
+    return getCurrentSettings();
+  }
+}
+
+function getCurrentSettings() {
+  return {
+    bySunPosition: document.getElementById('setting-sun-position').checked,
+    graMga: document.querySelector('input[name="gra-mga"]:checked').value,
+    twilightAngles: {
+      alot: Number(document.getElementById('setting-alot').value),
+      misheyakir: Number(document.getElementById('setting-misheyakir').value),
+      tzeit: Number(document.getElementById('setting-tzeit').value),
+    },
+  };
+}
+
+function persistSettings() {
+  try {
+    localStorage.setItem('zmanimSettings', JSON.stringify(getCurrentSettings()));
+  } catch (err) {
+    // localStorage may be unavailable; continue without caching
+  }
+}
+
+function loadCity() {
+    try {
+        return localStorage.getItem('lastCity');
+    } catch (err) {
+        return '';
+    }
+}
+function persistCity(city) {
+  try {
+    localStorage.setItem('lastCity', city);
+  } catch (err) {
+    // localStorage may be unavailable; continue without caching
+  }
+}
+
+function loadCityData(city) {
+  const cacheKey = `geoData_${city.toLowerCase()}`;
+  
+  try {
+    // Check if data is already in localStorage
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      console.log('Using cached data for:', city);
+      const json = JSON.parse(cached);
+      console.log('Cached data:', json);
+      return json;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+    
+}
+function persistCityData(cityData, city) {
+  if (!city) city = cityData.name;
+  const cacheKey = `geoData_${city.toLowerCase()}`;
+  try {
+    // Store in localStorage for future use
+    localStorage.setItem(cacheKey, JSON.stringify(cityData));
+  } catch (err) {
+    // localStorage may be unavailable; continue without caching
+  }  
 }
 
 function displayCard(cityData) {
-  const { name, state, country } = cityData;
-  const city = (country === 'IL')
-    ? cityData.local_names.he
-    : `${name}${state ? ', ' + state : ''}${country ? ', ' + country : ''}`;
+  const city = fullCityName(cityData);
 
   const dateOptions = {
     weekday: "long",
@@ -121,8 +185,7 @@ function displayCard(cityData) {
 
   const dateStr = document.getElementById('date').value; // YYYY-MM-DD
   const date = new Date(dateStr);
-
-  document.getElementById('results').hidden = false;
+  const settings = getCurrentSettings();
   
   document.getElementById('card-city').textContent = city;
   document.getElementById('card-coords').textContent =
@@ -142,7 +205,7 @@ function displayCard(cityData) {
   zmanimBody.innerHTML = '';
   for (let zman in zmanim) {
     const row = document.createElement('tr');
-    let timeStr = zmanim[zman](dateStr, cityData).toLocaleTimeString("he", {timeZone: cityData.timezone});
+    let timeStr = zmanim[zman](dateStr, cityData, settings).toLocaleTimeString("he", {timeZone: cityData.timezone});
     if (timeStr == 'Invalid Date') timeStr = "--:--";
     row.innerHTML = `<td>${zman}</td><td dir='ltr'>${timeStr}</td>`;
     zmanimBody.appendChild(row);
