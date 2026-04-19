@@ -2,7 +2,7 @@ const GEO_URL = "https://api.openweathermap.org/geo/1.0/direct";
 const ONECALL_URL = "https://api.openweathermap.org/data/3.0/onecall";
 const REVERSE_URL = "http://api.openweathermap.org/geo/1.0/reverse";
 
-async function getCityDataCached(city, apiKey) {
+async function getCityDataCached(city) {
   const geoUrl = buildGeoQuery(city, apiKey);
   const geoData = await getGeoData(geoUrl);
   if (!geoData || geoData.length === 0) {
@@ -11,7 +11,7 @@ async function getCityDataCached(city, apiKey) {
   let { name, state, country, lat, lon } = geoData[0];
   let local_names = { he: geoData[0].local_names?.he };
 
-  const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
+  const weatherUrl = buildWeatherQuery(lat, lon, getApiKey());
   const weatherData = await getWeatherData(weatherUrl);
   let timezone = weatherData.timezone;
 
@@ -24,10 +24,10 @@ async function getCityDataCached(city, apiKey) {
   return { name, state, country, local_names, lat, lon, timezone };
 }
 
-async function getLocData(lat, lon, apiKey) {
+async function getLocData(lat, lon) {
   let name, state, country, local_names, timezone; 
-  const geoUrl = buildNameQuery(lat, lon, apiKey);
-  const weatherUrl = buildWeatherQuery(lat, lon, apiKey);
+  const geoUrl = buildNameQuery(lat, lon, getApiKey());
+  const weatherUrl = buildWeatherQuery(lat, lon, getApiKey());
   
   try {
     const geoData = await getGeoData(geoUrl);

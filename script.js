@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const findCity = async () => {
     clearError();
     
-    const apiKey = api_key_3; // using the imported key from keys.js
     const city = document.getElementById('city').value.trim();
     if (!city) {
       currentCityData = {
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       // Call API if not in local storage
       try {
-        currentCityData = await getCityDataCached(city, apiKey);
+        currentCityData = await getCityDataCached(city);
       } catch (err) {
         showError(err.message || String(err));
       }
@@ -48,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKey = api_key_3;
     const lat = Number(document.getElementById('lat').value);
     const lon = Number(document.getElementById('lon').value);
-    currentCityData = await getLocData(lat, lon, apiKey);
+    currentCityData = await getLocData(lat, lon);
     persistCity(currentCityData.name);
     persistCityData(currentCityData, city);
   };
