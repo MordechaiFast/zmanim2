@@ -2,8 +2,8 @@ const GEO_URL = "https://api.openweathermap.org/geo/1.0/direct";
 const ONECALL_URL = "https://api.openweathermap.org/data/3.0/onecall";
 const REVERSE_URL = "http://api.openweathermap.org/geo/1.0/reverse";
 
-async function getCityDataCached(city) {
-  const geoUrl = buildGeoQuery(city, apiKey);
+async function getCityData(city) {
+  const geoUrl = buildGeoQuery(city, getApiKey());
   const geoData = await getGeoData(geoUrl);
   if (!geoData || geoData.length === 0) {
     throw new Error('No data for this city.');
@@ -30,7 +30,7 @@ async function getLocData(lat, lon) {
   const weatherUrl = buildWeatherQuery(lat, lon, getApiKey());
   
   try {
-    const geoData = await getGeoData(geoUrl);
+    const geoData = await getLocName(geoUrl);
     if (!geoData || geoData.length === 0) {
       name = "Unknown location";
     } else {
@@ -51,7 +51,7 @@ async function getLocData(lat, lon) {
     timezone = 'Asia/Jerusalem';
   }
 
-  return = { name, state, country, local_names, lat, lon, timezone };
+  return { name, state, country, local_names, lat, lon, timezone };
 }
 
 function buildGeoQuery(city, apiKey) {

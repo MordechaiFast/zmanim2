@@ -115,6 +115,10 @@
               <input type="radio" name="gra-mga" id="setting-mga" value="MGA">
               <span>מג"א/רמב"ן Hours - Dawn to Dusk</span>
             </label>
+            <label class="choice-row">
+              <input type="radio" name="gra-mga" id="setting-mga" value="MGA2">
+              <span>מג"א/רמב"ן זמניות - Dawn to Dusk with twilight as a portion of the daylight hours</span>
+            </label>
           </fieldset>
     
           <fieldset class="settings-group">
@@ -129,9 +133,9 @@
             <div class="form-group">
               <label for="setting-misheyakir">משיכיר</label>
               <select id="setting-misheyakir">
-                <option value="11.5">11.5°</option>
-                <option value="11">11°</option>
-                <option value="10.5" selected>10.5°</option>
+                <option value="11.5">11.5° (50 min)</option>
+                <option value="11">11° (48 min)</option>
+                <option value="10.2" selected>10.2° (44 min)</option>
               </select>
             </div>
             <div class="form-group">  
@@ -139,7 +143,14 @@
               <select id="setting-tzeit">
                 <option value="3.65">3.65° (13.5 min)</option>
                 <option value="4.61" selected>4.61° (18 min)</option>
-                <option value="6.45">6.45°</option>
+                <option value="6.45">6.45° (25 min)</option>
+              </select>
+            </div>
+            <div class="form-group">  
+              <label for="setting-shabbat">צאת שבת</label>
+              <select id="setting-shabbat">
+                <option value="8.5" selected>8.5° (36 min)</option>
+                <option value="9.28">9.28° (40 min)</option>
               </select>
             </div>
           </fieldset>

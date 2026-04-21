@@ -21,21 +21,9 @@
 - Defaluts on non-existant summer twilight times with midnight
 - Non-existant sunrise and sunset, shows --:--
 
-## Plan for adding options
-- Choose sun position or fixed proportion. Probably by means of a checkbox. Implemented as indicated by comment in temporalHour function.
-- Choose GRA/MGA times. Probably by radio button. Implimented again by comment in temporalHour. Important: This will change the settings for certain twilight times, in a future implimentation.
-- Should allow setting of the twilight times from dropdown menues
-
-### Twilight times
-Alot
-- 19.75 (90 min)
-- 16.1 (72 min)  -default
-Misheyakir
-- 11.5
-- 11
-- 10.5  -default
-Tzeit
-- 3.65 (13.5 min)
-- 4.61 (18 min)  -default
-- 6.45
-
+## Formattinng improvements
+- `card-left` and `card-right` should be divided in the middle of the `results-card`'s width, provided that the card is wide enough for both.
+- `daily-data` should have some formatting, appropriate for the overall style of the page
+- In settings, the select menus should line up vertically.
+- The text of the labels for the twilight times menus, which are in Hebrew, should be right justified.
+- 

@@ -1,5 +1,4 @@
 const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
-const shabbatDeg = 8.5;
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentCityData = null;
@@ -7,9 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const findCity = async () => {
     clearError();
-    
+
     const city = document.getElementById('city').value.trim();
-    if (!city) {
+    if (city) {
+      try {
+        currentCityData = loadCityData(city);
+      } catch (err) {
+        // Call API if not in local storage
+        try {
+          currentCityData = await getCityData(city);
+        } catch (err) {
+          showError(err.message || String(err));
+        }
+      }
+      persistCity(city);
+      persistCityData(currentCityData, city);
+    } else {
       currentCityData = {
         name: '',
         lat: MIKDASH_LAT,
@@ -18,20 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         country: 'IL',
         local_names: { he: "בית המקדש" }
       };
-      return;        
     }
-    try {
-      currentCityData = loadCityData(city);
-    } catch (err) {
-      // Call API if not in local storage
-      try {
-        currentCityData = await getCityDataCached(city);
-      } catch (err) {
-        showError(err.message || String(err));
-      }
-    }
-    persistCity(city);
-    persistCityData(currentCityData, city);
   };
 
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
@@ -41,10 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
       displayCard(currentCityData);
     }
   });
-  
+
   const findLoc = async () => {
     clearError();
-    const apiKey = api_key_3;
     const lat = Number(document.getElementById('lat').value);
     const lon = Number(document.getElementById('lon').value);
     currentCityData = await getLocData(lat, lon);
@@ -74,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
-  
+
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
 
@@ -94,14 +92,16 @@ function initialize(city, settings) {
   document.getElementById('setting-alot').value = String(settings.twilightAngles.alot);
   document.getElementById('setting-misheyakir').value = String(settings.twilightAngles.misheyakir);
   document.getElementById('setting-tzeit').value = String(settings.twilightAngles.tzeit);
+  document.getElementById('setting-shabbat').value = String(settings.twilightAngles.shabbat);
 }
 
 function loadSettings() {
   try {
-    return JSON.parse(localStorage.getItem('zmanimSettings'));
-  } catch (err) {
-    return getCurrentSettings();
-  }
+    const cache = localStorage.getItem('zmanimSettings');
+    if (cache)
+      return JSON.parse(cache);
+  } catch (err) { }
+  return getCurrentSettings();
 }
 
 function getCurrentSettings() {
@@ -112,6 +112,7 @@ function getCurrentSettings() {
       alot: Number(document.getElementById('setting-alot').value),
       misheyakir: Number(document.getElementById('setting-misheyakir').value),
       tzeit: Number(document.getElementById('setting-tzeit').value),
+      shabbat: Number(document.getElementById('setting-shabbat').value),
     },
   };
 }
@@ -126,9 +127,9 @@ function persistSettings() {
 
 function loadCity() {
     try {
-        return localStorage.getItem('lastCity');
+      return localStorage.getItem('lastCity');
     } catch (err) {
-        return '';
+      return '';
     }
 }
 function persistCity(city) {
@@ -141,72 +142,47 @@ function persistCity(city) {
 
 function loadCityData(city) {
   const cacheKey = `geoData_${city.toLowerCase()}`;
-  
-  try {
-    // Check if data is already in localStorage
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      console.log('Using cached data for:', city);
-      const json = JSON.parse(cached);
+  const cached = localStorage.getItem(cacheKey);
+  if (cached != null) {
+    console.log('Using cached data for:', city);
+    const json = JSON.parse(cached);
+    if (json) {
       console.log('Cached data:', json);
       return json;
     }
-  } catch (err) {
-    console.log(err);
   }
-    
+  throw new Error();
 }
+
 function persistCityData(cityData, city) {
   if (!city) city = cityData.name;
-  const cacheKey = `geoData_${city.toLowerCase()}`;
   try {
-    // Store in localStorage for future use
+    const cacheKey = `geoData_${city?.toLowerCase()}`;
     localStorage.setItem(cacheKey, JSON.stringify(cityData));
   } catch (err) {
     // localStorage may be unavailable; continue without caching
-  }  
+  }
 }
 
 function displayCard(cityData) {
-  const city = fullCityName(cityData);
-
-  const dateOptions = {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const timeOptions = {
-    timeZone: cityData.timezone,
-    timeZoneName: "long",
-    hour12: false,
-  };
-
   const dateStr = document.getElementById('date').value; // YYYY-MM-DD
-  const date = new Date(dateStr);
   const settings = getCurrentSettings();
-  
-  document.getElementById('card-city').textContent = city;
+
+  document.getElementById('card-city').textContent = fullCityName(cityData);
   document.getElementById('card-coords').textContent =
    `${latStr(cityData.lat)} ${longStr(cityData.lon)}`;
   document.getElementById('card-direction').textContent = 
     greatCircleDirection(cityData.lat, cityData.lon, MIKDASH_LAT, MIKDASH_LON);
-
-  document.getElementById('card-date').textContent = 
-    date.toLocaleDateString(undefined, dateOptions);
-  document.getElementById('card-tz').textContent = (
-    date.toLocaleTimeString(undefined, timeOptions).match(/\s+(.+)/)[1]
-    + ` (${formatOffset(getOffsetMinutes(cityData.timezone, date))})`);
-  document.getElementById('card-hebrew-date').textContent = 
-    hebrewDate(date);
+  document.getElementById('card-date').textContent = fullDate(dateStr);
+  document.getElementById('card-tz').textContent = timeZoneStr(cityData, dateStr);
+  document.getElementById('card-hebrew-date').textContent = hebrewDate(new Date(dateStr));
 
   const zmanimBody = document.getElementById('zmanim-body');
   zmanimBody.innerHTML = '';
   for (let zman in zmanim) {
     const row = document.createElement('tr');
-    let timeStr = zmanim[zman](dateStr, cityData, settings).toLocaleTimeString("he", {timeZone: cityData.timezone});
-    if (timeStr == 'Invalid Date') timeStr = "--:--";
-    row.innerHTML = `<td>${zman}</td><td dir='ltr'>${timeStr}</td>`;
+    row.innerHTML =
+      `<td>${zman}</td><td dir='ltr'>${zmanim[zman](dateStr, cityData, settings)}</td>`;
     zmanimBody.appendChild(row);
   }
 }

@@ -84,6 +84,28 @@ function greatCircleDirection(lat1, lon1, lat2, lon2) {
   return `${directionStr(brng)} (${brng.toFixed(0)}°)`;
 }
 
+function fullDate(dateStr) {
+  const date = new Date(dateStr);
+  const dateOptions = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString(undefined, dateOptions);
+}
+
+function timeZoneStr(cityData, dateStr) {
+  const date = new Date(dateStr);
+  const timeOptions = {
+    timeZone: cityData.timezone,
+    timeZoneName: "long",
+    hour12: false,
+  };
+  return date.toLocaleTimeString(undefined, timeOptions).match(/\s+(.+)/)[1]
+    + ` (${formatOffset(getOffsetMinutes(cityData.timezone, date))})`;
+}
+
 function hebrewNumber(num) {
   const thousands = num - num % 1000;
 	const hundreds = num - thousands - num % 100;
@@ -123,7 +145,7 @@ function twilightAngle(dateStr, locationData, decentAngle, evening=false) {
     lat: locationData.lat,
     long: -locationData.lon
   };
-  return twilightTime(-decentAngle, evening, date, location)
+  return twilightTime(-decentAngle, evening, date, location);
 }
 
 function temporalHour(dateStr, locationData, hour, options = {}) {
@@ -144,22 +166,32 @@ function temporalHour(dateStr, locationData, hour, options = {}) {
     atmospheric = {},
   } = options;
 
+  let time;
   if (graMga === "MGA") {
-    return bySunPosition
+    time = bySunPosition
       ? temporalHourR(hour, date, location, atmospheric, twilightAngles.alot)
       : temporalHourD(hour, date, location, twilightAngles.alot);
   }
-
-  return bySunPosition
-    ? temporalHourR(hour, date, location, atmospheric)
-    : temporalHourS(hour, date, location);
+  if (graMga === "MGA2") {
+    hour = (hour - 6) * 1.25 + 6;
+    time = bySunPosition
+      ? temporalHourR(hour, date, location, atmospheric)
+      : temporalHourS(hour, date, location);
+  } else {
+    time = bySunPosition
+      ? temporalHourR(hour, date, location, atmospheric)
+      : temporalHourS(hour, date, location);
+  }
+  let timeStr = time.toLocaleTimeString("he", {timeZone: locationData.timezone});
+  if (timeStr == 'Invalid Date') timeStr = "--:--";
+  return timeStr;
 }
 
 const evening = true;
 const zmanim = {
   "עלות השחר": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.alot),
   "משיכיר": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.misheyakir),
-  "הנץ החמה": (date, location) => twilightAngle(date, location, 50/60),
+  "הנץ החמה": (date, location, settings) => twilightAngle(date, location, 50/60),
   "סוף זמן קריאת שמע": (date, location, settings) => temporalHour(date, location, 3, settings),
   "סוף זמן תפילה": (date, location, settings) => temporalHour(date, location, 4, settings),
   "חצות היום": (date, location, settings) => temporalHour(date, location, 6, settings),
@@ -167,8 +199,8 @@ const zmanim = {
   "סמוך למנחה": (date, location, settings) => temporalHour(date, location, 9, settings),
   "מנחה קטנה": (date, location, settings) => temporalHour(date, location, 9.5, settings),
   "פלג המנחה": (date, location, settings) => temporalHour(date, location, 10.75, settings),
-  "שקיעת החמה": (date, location) => twilightAngle(date, location, 50/60, evening),
+  "שקיעת החמה": (date, location, settings) => twilightAngle(date, location, 50/60, evening),
   "צאת הכוכבים": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.tzeit, evening),
-  "צאת שבת": (date, location) => twilightAngle(date, location, shabbatDeg, evening),
+  "צאת שבת": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.shabbat, evening),
   "חצות הלילה": (date, location) => twilightAngle(date, location, 90, evening),
 }
