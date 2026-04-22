@@ -145,7 +145,8 @@ function twilightAngle(dateStr, locationData, decentAngle, evening=false) {
     lat: locationData.lat,
     long: -locationData.lon
   };
-  return twilightTime(-decentAngle, evening, date, location);
+  const time = twilightTime(-decentAngle, evening, date, location);
+  return time.toLocaleTimeString("he", {timeZone: locationData.timezone});
 }
 
 function temporalHour(dateStr, locationData, hour, options = {}) {
@@ -171,8 +172,7 @@ function temporalHour(dateStr, locationData, hour, options = {}) {
     time = bySunPosition
       ? temporalHourR(hour, date, location, atmospheric, twilightAngles.alot)
       : temporalHourD(hour, date, location, twilightAngles.alot);
-  }
-  if (graMga === "MGA2") {
+  } else if (graMga === "MGA2") {
     hour = (hour - 6) * 1.25 + 6;
     time = bySunPosition
       ? temporalHourR(hour, date, location, atmospheric)

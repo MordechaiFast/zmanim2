@@ -26,4 +26,3 @@
 - `daily-data` should have some formatting, appropriate for the overall style of the page
 - In settings, the select menus should line up vertically.
 - The text of the labels for the twilight times menus, which are in Hebrew, should be right justified.
-- 
