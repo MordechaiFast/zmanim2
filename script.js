@@ -11,16 +11,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (city) {
       try {
         currentCityData = loadCityData(city);
+        persistCity(city);
+        persistCityData(currentCityData, city);
       } catch (err) {
         // Call API if not in local storage
         try {
           currentCityData = await getCityData(city);
+          persistCity(city);
+          persistCityData(currentCityData, city);
         } catch (err) {
           showError(err.message || String(err));
         }
       }
-      persistCity(city);
-      persistCityData(currentCityData, city);
     } else {
       currentCityData = {
         name: '',
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const findLoc = async () => {
     clearError();
+
     const lat = Number(document.getElementById('lat').value);
     const lon = Number(document.getElementById('lon').value);
     currentCityData = await getLocData(lat, lon);
