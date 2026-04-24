@@ -146,7 +146,7 @@ function twilightAngle(dateStr, locationData, decentAngle, evening=false) {
     long: -locationData.lon
   };
   const time = twilightTime(-decentAngle, evening, date, location);
-  return time.toLocaleTimeString("he", {timeZone: locationData.timezone});
+  return time.toLocaleTimeString("he", {timeZone: locationData.timezone, hour: "2-digit", minute: "numeric", second: "numeric"});
 }
 
 function temporalHour(dateStr, locationData, hour, options = {}) {
@@ -182,7 +182,7 @@ function temporalHour(dateStr, locationData, hour, options = {}) {
       ? temporalHourR(hour, date, location, atmospheric)
       : temporalHourS(hour, date, location);
   }
-  let timeStr = time.toLocaleTimeString("he", {timeZone: locationData.timezone});
+  let timeStr = time.toLocaleTimeString("he", {timeZone: locationData.timezone, hour: "2-digit", minute: "numeric", second: "numeric"});
   if (timeStr == 'Invalid Date') timeStr = "--:--";
   return timeStr;
 }
@@ -192,6 +192,7 @@ const zmanim = {
   "עלות השחר": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.alot),
   "משיכיר": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.misheyakir),
   "הנץ החמה": (date, location, settings) => twilightAngle(date, location, 50/60),
+  'ס"ז ק"ש גאונים': (date, location, settings) => temporalHour(date, location, 2, settings),
   "סוף זמן קריאת שמע": (date, location, settings) => temporalHour(date, location, 3, settings),
   "סוף זמן תפילה": (date, location, settings) => temporalHour(date, location, 4, settings),
   "חצות היום": (date, location, settings) => temporalHour(date, location, 6, settings),
