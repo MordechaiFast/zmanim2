@@ -21,8 +21,7 @@
 - Defaluts on non-existant summer twilight times with midnight
 - Non-existant sunrise and sunset, shows --:--
 
-## Formattinng improvements
-- `card-left` and `card-right` should be divided in the middle of the `results-card`'s width, provided that the card is wide enough for both.
-- `daily-data` should have some formatting, appropriate for the overall style of the page
-- In settings, the select menus should line up vertically.
-- The text of the labels for the twilight times menus, which are in Hebrew, should be right justified.
+## Fixing of Alot degrees for MGA setting
+- When the temporal hour method is set to "MGA" (not "MGA2") the selection for עלות השחר and צאת שבת is fixed at 19.75.
+- The page displays this "choice" in the select menu, freezing it.
+- The origonal setting is remembered for this session, so that it will be reset when a different method is selected.

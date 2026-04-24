@@ -1,8 +1,12 @@
 const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
+const MGA_TWILIGHT_VALUE = '19.75';
+
+let twilightMemory = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentCityData = null;
   initialize(loadCity(), loadSettings());
+  applyMgaTwilightLock();
 
   const findCity = async () => {
     clearError();
@@ -69,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('#settings input, #settings select').forEach((control) => {
     control.addEventListener('change', () => {
+      applyMgaTwilightLock();
       persistSettings();
       if (currentCityData) {
         displayCard(currentCityData);
@@ -96,6 +101,33 @@ function initialize(city, settings) {
   document.getElementById('setting-misheyakir').value = String(settings.twilightAngles.misheyakir);
   document.getElementById('setting-tzeit').value = String(settings.twilightAngles.tzeit);
   document.getElementById('setting-shabbat').value = String(settings.twilightAngles.shabbat);
+}
+
+function applyMgaTwilightLock() {
+  const selectedMethod = document.querySelector('input[name="gra-mga"]:checked')?.value;
+  const alot = document.getElementById('setting-alot');
+  const shabbat = document.getElementById('setting-shabbat');
+
+  if (selectedMethod === 'MGA') {
+    if (twilightMemory === null) {
+      twilightMemory = {
+        alot: alot.value,
+        shabbat: shabbat.value,
+      };
+    }
+    alot.value = MGA_TWILIGHT_VALUE;
+    shabbat.value = MGA_TWILIGHT_VALUE;
+    alot.disabled = true;
+    shabbat.disabled = true;
+  } else {
+    if (twilightMemory !== null) {
+      alot.value = twilightMemory.alot;
+      shabbat.value = twilightMemory.shabbat;
+    }
+    alot.disabled = false;
+    shabbat.disabled = false;
+    twilightMemory = null;
+  }
 }
 
 function loadSettings() {

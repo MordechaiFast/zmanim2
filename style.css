@@ -312,6 +312,15 @@ form {
   border-color: var(--color-input-focus);
 }
 
+.settings-group select:disabled{
+  opacity: 1;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface-soft) 88%, var(--color-border-soft));
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .settings-note{
   margin: 0;
   font-size: 0.9rem;
