@@ -64,13 +64,6 @@ h1 {
   width: min(92vw, var(--max-width));
 }
 
-.form-section {
-    background: var(--color-surface);
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: var(--shadow-form);
-}
-
 form {
     display: flex;
     flex-direction: column;
@@ -92,6 +85,10 @@ form {
     min-width: 70px;
 }
 
+.form-group label.unit-label {
+    min-width: 0;
+}
+
 .form-group input {
     padding: 12px 16px;
     border: 2px solid var(--color-input-border);
@@ -106,6 +103,10 @@ form {
 .form-group input[type="number"] {
     width: 150px;
     flex: 0 0 auto;
+}
+
+#coords-form .form-group input[type="number"] {
+    width: 120px;
 }
 
 .form-group input:focus {

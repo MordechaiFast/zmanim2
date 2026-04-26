@@ -161,12 +161,13 @@ function persistSettings() {
 }
 
 function loadCity() {
-    try {
-      return localStorage.getItem('lastCity');
-    } catch (err) {
-      return '';
-    }
+  try {
+    return localStorage.getItem('lastCity');
+  } catch (err) {
+    return '';
+  }
 }
+
 function persistCity(city) {
   try {
     localStorage.setItem('lastCity', city);

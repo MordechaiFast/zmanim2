@@ -45,6 +45,7 @@
               step="any"
               placeholder="e.g. 31.7780"
             >
+            <label for="lat" class="unit-label">°N</label>
           </div>
           <div class="form-group">
             <label for="lon">Longitude:</label>
@@ -58,6 +59,7 @@
               step="any"
               placeholder="e.g. 35.2353"
             >
+            <label for="lon" class="unit-label">°E</label>
           </div>
           <button type="submit" class="btn-submit">Find Location</button>
         </div>
@@ -65,8 +67,7 @@
       <div id="error" role="alert" aria-live="polite"></div>
     </section>
 
-    <section id="results">
-      <div id="results-card" class="results-card" aria-live="polite">
+    <section id="results" class="results-card" aria-live="polite">
         <div class="card-left">
           <div class="city" id="card-city"></div>
           <span id="card-coords"></span>
@@ -92,10 +93,9 @@
             </tbody>
           </table>
         </div>
-      </div>
     </section>
-    <section id="settings">
     
+    <section id="settings">
       <div class="settings-card">
         <h2>Settings</h2>
         <div class="settings-grid">
