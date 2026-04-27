@@ -11,8 +11,6 @@
 - Show the zmain for that place and time
 - Includes midnight for end of that day
 
-- Should calculate and display the margin of error, how much earlier or latter the zman could be under resonable weather conditions
-- Should provide a link to Itim Labina for exact sunrise/sunset
 - Should produce monthly and yearly tables
 
 ## Edge cases
@@ -25,3 +23,14 @@
 - When the temporal hour method is set to "MGA" (not "MGA2") the selection for עלות השחר and צאת שבת is fixed at 19.75.
 - The page displays this "choice" in the select menu, freezing it.
 - The origonal setting is remembered for this session, so that it will be reset when a different method is selected.
+
+## Margin of error
+How much earlier or latter the zman could be under resonable weather conditions.
+Calculation has shown that the influince of weather is insignificant.
+
+## Short/long listing
+- Add button to page, at the bottom of the card-left section, entitled "Fewer zmanim".
+- When that button is pressed, toggle the button to "More zmanim".
+- Record the status of the button.
+- In 'less' mode, only display these zmanim: 
+	עלות השחר, משיכיר, הנץ החמה, סוף זמן קריאת שמע, סוף זמן תפילה, חצות היום, מנחה גדולה, פלג המנחה, שקיעת החמה, צאת הכוכבים, צאת שבת

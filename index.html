@@ -68,31 +68,31 @@
     </section>
 
     <section id="results" class="results-card" aria-live="polite">
-        <div class="card-left">
-          <div class="city" id="card-city"></div>
-          <span id="card-coords"></span>
-          <strong>Davening Direction:</strong> <span id="card-direction"></span>
-          <div class="form-group">
-            <label for="date"><strong>Date:</strong></label>
-            <input
-                type="date"
-                id="date"
-                name="date"
-                required
-            >
-          </div>
-          <span id="card-date"></span>
-          <span id="card-hebrew-date"></span>
-          <strong>Timezone:</strong> <span id="card-tz"></span>
+      <div class="card-left">
+        <div class="city" id="card-city"></div>
+        <span id="card-coords"></span>
+        <strong>Davening Direction:</strong> <span id="card-direction"></span>
+        <div class="form-group">
+          <label for="date"><strong>Date:</strong></label>
+          <input
+            type="date"
+            id="date"
+            name="date"
+            required
+          >
         </div>
+        <span id="card-date"></span>
+        <span id="card-hebrew-date"></span>
+        <strong>Timezone:</strong> <span id="card-tz"></span>
+      </div>
 
-        <div class="card-right">
-          <table class="daily-data" dir="rtl">
-            <thead></thead>
-            <tbody id="zmanim-body">
-            </tbody>
-          </table>
-        </div>
+      <div class="card-right">
+        <table class="daily-data" dir="rtl">
+          <thead></thead>
+          <tbody id="zmanim-body">
+          </tbody>
+        </table>
+      </div>
     </section>
     
     <section id="settings">
@@ -135,7 +135,7 @@
               <label for="setting-misheyakir" class="twilight-label">משיכיר</label>
               <select id="setting-misheyakir">
                 <option value="11.5">11.5° (50 min)</option>
-                <option value="11">11° (48 min)</option>
+                <!-->option value="11">11° (48 min)</option-->
                 <option value="10.2" selected>10.2° (44 min)</option>
               </select>
             </div>
@@ -143,6 +143,7 @@
               <label for="setting-tzeit" class="twilight-label">צאת הכוכבים</label>
               <select id="setting-tzeit">
                 <option value="3.65">3.65° (13.5 min)</option>
+                <option value="4.37">4.37° (16.875 min)</option>
                 <option value="4.61" selected>4.61° (18 min)</option>
                 <option value="5.88">5.88° (24 min)</option>
                 <option value="6.45">6.45° (27 min)</option>
@@ -152,7 +153,8 @@
               <label for="setting-shabbat" class="twilight-label">צאת שבת</label>
               <select id="setting-shabbat">
                 <option value="8.5" selected>8.5° (36 min)</option>
-                <option value="9.28">9.28° (40 min)</option>
+                <!--option value="9.28">9.28° (40 min)</option-->
+                <option value="16.02">16.02° (72 min)</option>
                 <option value="19.75">19.75° (90 min)</option>
                 <option value="25.9">25.9° (120 min)</option>
               </select>
