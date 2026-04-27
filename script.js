@@ -1,5 +1,18 @@
 const MIKDASH_LAT = 31.7780, MIKDASH_LON = 35.2353;
 const MGA_TWILIGHT_VALUE = '19.75';
+const COMPACT_ZMANIM = new Set([
+  'עלות השחר',
+  'משיכיר',
+  'הנץ החמה המישורי',
+  'סוף זמן קריאת שמע',
+  'סוף זמן תפילה',
+  'חצות היום',
+  'מנחה גדולה',
+  'פלג המנחה',
+  'שקיעת החמה המישורי',
+  'צאת הכוכבים',
+  'צאת שבת',
+]);
 
 let twilightMemory = null;
 
@@ -81,6 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  document.getElementById('zmanim-toggle').addEventListener('click', () => {
+    const nextValue = !getCurrentSettings().showAllZmanim;
+    setZmanimToggle(nextValue);
+    persistSettings();
+    if (currentCityData) {
+      displayCard(currentCityData);
+    }
+  });
+
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
 
@@ -101,6 +123,7 @@ function initialize(city, settings) {
   document.getElementById('setting-misheyakir').value = String(settings.twilightAngles.misheyakir);
   document.getElementById('setting-tzeit').value = String(settings.twilightAngles.tzeit);
   document.getElementById('setting-shabbat').value = String(settings.twilightAngles.shabbat);
+  setZmanimToggle(settings.showAllZmanim);
 }
 
 function applyMgaTwilightLock() {
@@ -143,6 +166,7 @@ function getCurrentSettings() {
   return {
     bySunPosition: document.getElementById('setting-sun-position').checked,
     graMga: document.querySelector('input[name="gra-mga"]:checked').value,
+    showAllZmanim: document.getElementById('zmanim-toggle').dataset.mode !== 'compact',
     twilightAngles: {
       alot: Number(document.getElementById('setting-alot').value),
       misheyakir: Number(document.getElementById('setting-misheyakir').value),
@@ -158,6 +182,12 @@ function persistSettings() {
   } catch (err) {
     // localStorage may be unavailable; continue without caching
   }
+}
+
+function setZmanimToggle(showAllZmanim) {
+  const button = document.getElementById('zmanim-toggle');
+  button.dataset.mode = showAllZmanim ? 'full' : 'compact';
+  button.textContent = showAllZmanim ? 'Fewer zmanim' : 'All zmanim';
 }
 
 function loadCity() {
@@ -203,6 +233,9 @@ function persistCityData(cityData, city) {
 function displayCard(cityData) {
   const dateStr = document.getElementById('date').value; // YYYY-MM-DD
   const settings = getCurrentSettings();
+  const visibleZmanim = settings.showAllZmanim
+    ? Object.keys(zmanim)
+    : Object.keys(zmanim).filter((zman) => COMPACT_ZMANIM.has(zman));
 
   document.getElementById('card-city').textContent = fullCityName(cityData);
   document.getElementById('card-coords').textContent =
@@ -215,7 +248,7 @@ function displayCard(cityData) {
 
   const zmanimBody = document.getElementById('zmanim-body');
   zmanimBody.innerHTML = '';
-  for (let zman in zmanim) {
+  for (const zman of visibleZmanim) {
     const row = document.createElement('tr');
     row.innerHTML =
       `<td>${zman}</td><td dir='ltr'>${zmanim[zman](dateStr, cityData, settings)}</td>`;

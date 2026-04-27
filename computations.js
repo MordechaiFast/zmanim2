@@ -197,11 +197,12 @@ const zmanim = {
   "סוף זמן תפילה": (date, location, settings) => temporalHour(date, location, 4, settings),
   "חצות היום": (date, location, settings) => temporalHour(date, location, 6, settings),
   "מנחה גדולה": (date, location, settings) => temporalHour(date, location, 6.5, settings),
+  "סוף זמן מוסף": (date, location, settings) => temporalHour(date, location, 7, settings),
   "סמוך למנחה": (date, location, settings) => temporalHour(date, location, 9, settings),
   "מנחה קטנה": (date, location, settings) => temporalHour(date, location, 9.5, settings),
   "פלג המנחה": (date, location, settings) => temporalHour(date, location, 10.75, settings),
   "שקיעת החמה המישורי": (date, location, settings) => twilightAngle(date, location, 50/60, evening),
   "צאת הכוכבים": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.tzeit, evening),
   "צאת שבת": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.shabbat, evening),
-  "חצות הלילה": (date, location) => twilightAngle(date, location, 90, evening),
+  "חצות הלילה": (date, location, settings) => twilightAngle(date, location, 90, evening),
 }
