@@ -29,13 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         currentCityData = loadCityData(city);
         persistCity(city);
-        persistCityData(currentCityData, city);
+        persistCityData(currentCityData, currentCityData.name);
       } catch (err) {
         // Call API if not in local storage
         try {
           currentCityData = await getCityData(city);
           persistCity(city);
-          persistCityData(currentCityData, city);
+          persistCityData(currentCityData, currentCityData.name);
         } catch (err) {
           showError(err.message || String(err));
         }
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lon = Number(document.getElementById('lon').value);
     currentCityData = await getLocData(lat, lon);
     persistCity(currentCityData.name);
-    persistCityData(currentCityData, city);
+    persistCityData(currentCityData, currentCityData.name);
   };
 
   document.getElementById('coords-form').addEventListener('submit', async (ev) => {
@@ -102,6 +102,24 @@ document.addEventListener('DOMContentLoaded', () => {
       displayCard(currentCityData);
     }
   });
+
+  const currentLocationSection = document.getElementById('current-location');
+  const currentLocationButton = document.getElementById('current-location-btn');
+
+  if (!navigator.geolocation) {
+    currentLocationSection.hidden = true;
+  } else {
+    currentLocationButton.addEventListener('click', () => {
+      clearError();
+      navigator.geolocation.getCurrentPosition((position) => {
+        document.getElementById('lat').value = String(position.coords.latitude);
+        document.getElementById('lon').value = String(position.coords.longitude);
+        document.getElementById('coords-form').requestSubmit();
+      }, (err) => {
+        showError(err.message || 'Unable to retrieve current location.');
+      });
+    });
+  }
 
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
 });
