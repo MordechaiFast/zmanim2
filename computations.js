@@ -200,6 +200,7 @@ const zmanim = {
   "סוף זמן מוסף": (date, location, settings) => temporalHour(date, location, 7, settings),
   "סמוך למנחה": (date, location, settings) => temporalHour(date, location, 9, settings),
   "מנחה קטנה": (date, location, settings) => temporalHour(date, location, 9.5, settings),
+  'תוספת שבת ב"ח': (date, location, settings) => temporalHour(date, location, 10, settings),
   "פלג המנחה": (date, location, settings) => temporalHour(date, location, 10.75, settings),
   "שקיעת החמה המישורי": (date, location, settings) => twilightAngle(date, location, 50/60, evening),
   "צאת הכוכבים": (date, location, settings) => twilightAngle(date, location, settings.twilightAngles.tzeit, evening),
