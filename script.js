@@ -15,42 +15,10 @@ const COMPACT_ZMANIM = new Set([
 ]);
 
 let twilightMemory = null;
+let currentCityData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  let currentCityData = null;
   initialize(loadCity(), loadSettings());
-  applyMgaTwilightLock();
-
-  const findCity = async () => {
-    clearError();
-
-    const city = document.getElementById('city').value.trim();
-    if (city) {
-      try {
-        currentCityData = loadCityData(city);
-        persistCity(city);
-        persistCityData(currentCityData, currentCityData.name);
-      } catch (err) {
-        // Call API if not in local storage
-        try {
-          currentCityData = await getCityData(city);
-          persistCity(city);
-          persistCityData(currentCityData, currentCityData.name);
-        } catch (err) {
-          showError(err.message || String(err));
-        }
-      }
-    } else {
-      currentCityData = {
-        name: '',
-        lat: MIKDASH_LAT,
-        lon: MIKDASH_LON,
-        timezone: 'Asia/Jerusalem',
-        country: 'IL',
-        local_names: { he: "בית המקדש" }
-      };
-    }
-  };
 
   document.getElementById('input-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
@@ -59,16 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
       displayCard(currentCityData);
     }
   });
-
-  const findLoc = async () => {
-    clearError();
-
-    const lat = Number(document.getElementById('lat').value);
-    const lon = Number(document.getElementById('lon').value);
-    currentCityData = await getLocData(lat, lon);
-    persistCity(currentCityData.name);
-    persistCityData(currentCityData, currentCityData.name);
-  };
 
   document.getElementById('coords-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
@@ -142,6 +100,7 @@ function initialize(city, settings) {
   document.getElementById('setting-tzeit').value = String(settings.twilightAngles.tzeit);
   document.getElementById('setting-shabbat').value = String(settings.twilightAngles.shabbat);
   setZmanimToggle(settings.showAllZmanim);
+  applyMgaTwilightLock();
 }
 
 function applyMgaTwilightLock() {
@@ -246,6 +205,47 @@ function persistCityData(cityData, city) {
   } catch (err) {
     // localStorage may be unavailable; continue without caching
   }
+}
+
+async function findCity() {
+  clearError();
+
+  const city = document.getElementById('city').value.trim();
+  if (city) {
+    try {
+      currentCityData = loadCityData(city);
+      persistCity(city);
+      persistCityData(currentCityData, currentCityData.name);
+    } catch (err) {
+      // Call API if not in local storage
+      try {
+        currentCityData = await getCityData(city);
+        persistCity(city);
+        persistCityData(currentCityData, currentCityData.name);
+      } catch (err) {
+        showError(err.message || String(err));
+      }
+    }
+  } else {
+    currentCityData = {
+      name: '',
+      lat: MIKDASH_LAT,
+      lon: MIKDASH_LON,
+      timezone: 'Asia/Jerusalem',
+      country: 'IL',
+      local_names: { he: "בית המקדש" }
+    };
+  }
+}
+
+async function findLoc() {
+  clearError();
+
+  const lat = Number(document.getElementById('lat').value);
+  const lon = Number(document.getElementById('lon').value);
+  currentCityData = await getLocData(lat, lon);
+  persistCity(currentCityData.name);
+  persistCityData(currentCityData, currentCityData.name);
 }
 
 function displayCard(cityData) {

@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Zmanim city search</title>
+  <title>Sun Position Zmanim</title>
   
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css" />
   <script src="keys.js"></script>
   <script src="api.js"></script>
-  <script src="computations.js"></script>
   <script src="zman.js"></script>
+  <script src="computations.js"></script>
 </head>
 <body>
   <h1>Sun Position Zmanim</h1>
@@ -32,10 +32,6 @@
           <button type="submit" class="btn-submit">Find city</button>
         </div>
       </form>
-      <div id="current-location" class="form-group-row">
-        <span>or use</span>
-        <button type="button" id="current-location-btn" class="btn-secondary">current location</button>
-      </div>
       <form id="coords-form">
         <div class="form-group-row">
           <div class="form-group">
@@ -65,6 +61,10 @@
               placeholder="e.g. 35.2353"
             >
             <label for="lon" class="unit-label">°E</label>
+          </div>
+          <div id="current-location" class="form-group-row">
+            <span>or use</span>
+            <button type="button" id="current-location-btn" class="btn-secondary">current location</button>
           </div>
           <button type="submit" class="btn-submit">Find Location</button>
         </div>
@@ -108,12 +108,6 @@
           <fieldset class="settings-group">
             <legend>Temporal Hour Method</legend>
             <label class="choice-row">
-              <input type="checkbox" id="setting-sun-position" checked>
-              <span>זמנים by actual sun position</span>
-            </label>
-            <p class="settings-note">Not by fixed proportions of the day</p>
-            <br>
-            <label class="choice-row">
               <input type="radio" name="gra-mga" id="setting-gra" value="GRA" checked>
               <span>גר"א/לבוש Hours - Sunrise to Sunset</span>
             </label>
@@ -125,6 +119,12 @@
               <input type="radio" name="gra-mga" id="setting-mga" value="MGA">
               <span>מג"א/רמב"ן Hours - Dawn to Dusk</span>
             </label>
+            <br>
+            <label class="choice-row">
+              <input type="checkbox" id="setting-sun-position" checked>
+              <span>זמנים by actual sun position</span>
+            </label>
+            <p class="settings-note">Not by fixed proportions of the day</p>
           </fieldset>
     
           <fieldset class="settings-group">

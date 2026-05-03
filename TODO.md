@@ -34,3 +34,7 @@ Calculation has shown that the influince of weather is insignificant.
 - Record the status of the button.
 - In 'less' mode, only display these zmanim: 
 	עלות השחר, משיכיר, הנץ החמה, סוף זמן קריאת שמע, סוף זמן תפילה, חצות היום, מנחה גדולה, פלג המנחה, שקיעת החמה, צאת הכוכבים, צאת שבת
+## Current location
+- Add a line after search section, "or use <current location>", with current location being a button.
+- When current location is clicked, use `navigator.geolocation.getCurrentPosition` to get the latitude and logitude, and put those values into the latitude and longitude inputs, and send a submit to that form.
+- If geolocation is not avalible and can not be requested, hide this section.

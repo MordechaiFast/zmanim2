@@ -137,6 +137,14 @@ form {
   min-width: 240px;
 }
 
+#current-location {
+  align-items: center;
+}
+
+#current-location > span {
+  line-height: 1;
+}
+
 .btn-submit {
     padding: 12px 24px;
     background: #2563eb;
