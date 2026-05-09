@@ -222,6 +222,13 @@ form {
   padding-right: 1rem;
 }
 
+.metadata-row{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
 .city{
   font-weight: 700;
   font-size: 1.1rem;

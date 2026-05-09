@@ -95,6 +95,29 @@ function fullDate(dateStr) {
   return date.toLocaleDateString(undefined, dateOptions);
 }
 
+function currentDateInTimeZone(timeZone, date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const year = parts.find((part) => part.type === "year").value;
+  const month = parts.find((part) => part.type === "month").value;
+  const day = parts.find((part) => part.type === "day").value;
+  return `${year}-${month}-${day}`;
+}
+
+function currentTimeStr(timeZone, date = new Date()) {
+  return date.toLocaleTimeString(undefined, {
+    timeZone,
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+}
+
 function timeZoneStr(cityData, dateStr) {
   const date = new Date(dateStr);
   const timeOptions = {

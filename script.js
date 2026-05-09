@@ -16,6 +16,7 @@ const COMPACT_ZMANIM = new Set([
 
 let twilightMemory = null;
 let currentCityData = null;
+let currentTimeTimer = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   initialize(loadCity(), loadSettings());
@@ -101,6 +102,26 @@ function initialize(city, settings) {
   document.getElementById('setting-shabbat').value = String(settings.twilightAngles.shabbat);
   setZmanimToggle(settings.showAllZmanim);
   applyMgaTwilightLock();
+}
+
+function updateCurrentTime(cityData) {
+  document.getElementById('card-current-time').textContent = currentTimeStr(cityData.timezone);
+}
+
+function syncCurrentTime(cityData, dateStr) {
+  if (currentTimeTimer !== null) {
+    clearInterval(currentTimeTimer);
+    currentTimeTimer = null;
+  }
+  
+  if (dateStr !== currentDateInTimeZone(cityData.timezone)) {
+    document.getElementById('card-current-time').textContent = '';
+  } else {
+    updateCurrentTime(cityData);
+    currentTimeTimer = setInterval(() => {
+      updateCurrentTime(cityData);
+    }, 1000);
+  }
 }
 
 function applyMgaTwilightLock() {
@@ -271,6 +292,7 @@ function displayCard(cityData) {
   document.getElementById('card-date').textContent = fullDate(dateStr);
   document.getElementById('card-tz').textContent = timeZoneStr(cityData, dateStr);
   document.getElementById('card-hebrew-date').textContent = hebrewDate(new Date(dateStr));
+  syncCurrentTime(cityData, dateStr);
 
   const zmanimBody = document.getElementById('zmanim-body');
   zmanimBody.innerHTML = '';
