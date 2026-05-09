@@ -75,8 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('coords-form').requestSubmit();
       }, (err) => {
         showError(err.message || 'Unable to retrieve current location.');
-      });
-    });
+      }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    )});
   }
 
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
@@ -243,9 +243,17 @@ async function findLoc() {
 
   const lat = Number(document.getElementById('lat').value);
   const lon = Number(document.getElementById('lon').value);
-  currentCityData = await getLocData(lat, lon);
-  persistCity(currentCityData.name);
-  persistCityData(currentCityData, currentCityData.name);
+  try {
+    currentCityData = await getLocData(lat, lon);
+    persistCity(currentCityData.name);
+    persistCityData(currentCityData, currentCityData.name);
+  } catch (err) {
+    currentCityData = {
+      name: "Unknown location",
+      lat, lon,
+      timezone: formatOffset(Math.round(lon / 15) * 60),
+    };
+  }
 }
 
 function displayCard(cityData) {

@@ -29,22 +29,18 @@ async function getLocData(lat, lon) {
   const geoUrl = buildNameQuery(lat, lon, getApiKey());
   const weatherUrl = buildWeatherQuery(lat, lon, getApiKey());
   
-  try {
-    const geoData = await getLocName(geoUrl);
-    if (!geoData || geoData.length === 0) {
-      name = "Unknown location";
-    } else {
-      name = geoData[0].name;
-      state = geoData[0].state;
-      country = geoData[0].country;
-      local_names = { he: geoData[0].local_names?.he };
-    }
-    const weatherData = await getWeatherData(weatherUrl);
-    timezone = weatherData.timezone;
-  } catch (err) {
-    name = "Unknown location"; 
-    timezone = formatOffset(Math.round(lon / 15) * 60);
+  const geoData = await getLocName(geoUrl);
+  if (!geoData || geoData.length === 0) {
+    name = "Unknown location";
+  } else {
+    name = geoData[0].name;
+    state = geoData[0].state;
+    country = geoData[0].country;
+    local_names = { he: geoData[0].local_names?.he };
   }
+  const weatherData = await getWeatherData(weatherUrl);
+  timezone = weatherData.timezone;
+
   // Hebresize data
   if (country === 'PS') {
     country = 'IL';
