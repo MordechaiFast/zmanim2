@@ -152,9 +152,15 @@ function hebrewNumber(num) {
 function hebrewDate(date) {
   const dateStr = Intl.DateTimeFormat("he", {calendar: "hebrew"}).format(date);
   const parts = dateStr.split(" ");
-  parts[0] = hebrewNumber(parts[0]);
-  parts[2] = hebrewNumber(parts[2]);
-  return `${parts[0]} ${parts[1]} ${parts[2]}`;
+  if (parts.length == 3) {
+    parts[0] = hebrewNumber(parts[0]);
+    parts[2] = hebrewNumber(parts[2]);
+    return `${parts[0]} ${parts[1]} ${parts[2]}`;
+  } else {
+    parts[0] = hebrewNumber(parts[0]);
+    parts[3] = hebrewNumber(parts[3]);
+    return `${parts[0]} ${parts[1]} ${parts[2]} ${parts[3]}`;
+  }
 }
 
 function twilightAngle(dateStr, locationData, decentAngle, evening=false) {
