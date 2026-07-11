@@ -93,7 +93,11 @@ function clearError() {
 
 function initialize(city, settings) {
   document.getElementById('city').value = city;
-  document.getElementById('date').valueAsDate = new Date(); // default to today
+  const localDate = new Date(); // Default to current date in local timezone
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, '0');
+  const day = String(localDate.getDate()).padStart(2, '0');
+  document.getElementById('date').value = `${year}-${month}-${day}`;
   document.getElementById('setting-sun-position').checked = settings.bySunPosition;
   document.querySelector(`input[name="gra-mga"][value="${settings.graMga}"]`).checked = true;
   document.getElementById('setting-alot').value = String(settings.twilightAngles.alot);
