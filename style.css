@@ -120,22 +120,32 @@ form {
 
 .form-group-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   align-items: flex-end;
 }
 
 .form-group-row .form-group {
-  flex: 1;
+  flex: 1 1 220px;
+  min-width: 0;
 }
 
-#coords-form .form-group-row{
-  flex-wrap: wrap;
+.form-group-row .btn-submit {
+  flex: 0 0 auto;
 }
 
-#coords-form .form-group-row .form-group{
-  flex: 1 1 240px;
-  min-width: 240px;
+/* Keep the coordinate fields a bit wider */
+#coords-form .form-group-row .form-group {
+  flex-basis: 240px;
 }
+
+/* On small phones, let the button take a full row */
+@media (max-width: 640px) {
+  .form-group-row .btn-submit {
+    width: 100%;
+  }
+}
+
 
 #current-location {
   align-items: center;
