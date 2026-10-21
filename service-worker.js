@@ -46,7 +46,7 @@ self.addEventListener('fetch', (event) => {
       if (cachedResponse) {
         return cachedResponse;
       } else {
-        return new Response('Not found', { status: 404 });
+        return fetch(event.request);
       }
     })() );
   }
