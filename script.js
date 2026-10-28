@@ -27,6 +27,7 @@ if ('serviceWorker' in navigator) {
 let twilightMemory = null;
 let currentCityData = null;
 let currentTimeTimer = null;
+let currentLocationClicked = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   initialize(loadCity(), loadSettings());
@@ -80,14 +81,23 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     currentLocationButton.addEventListener('click', () => {
       clearError();
-      navigator.geolocation.getCurrentPosition((position) => {
-        document.getElementById('lat').value = String(position.coords.latitude);
-        document.getElementById('lon').value = String(position.coords.longitude);
-        document.getElementById('coords-form').requestSubmit();
-      }, (err) => {
-        showError(err.message || 'Unable to retrieve current location.');
-      }, { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-    )});
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          currentLocationClicked = true;
+          const oldLat = document.getElementById('lat').value;
+          const oldLon = document.getElementById('lon').value;
+          document.getElementById('lat').value = String(position.coords.latitude);
+          document.getElementById('lon').value = String(position.coords.longitude);
+          document.getElementById('coords-form').requestSubmit();
+          document.getElementById('lat').value = oldLat;
+          document.getElementById('lon').value = oldLon;
+        },
+        (err) => {
+          showError(err.message || 'Unable to retrieve current location.');
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      )
+    });
   }
 
   document.getElementById('input-form').dispatchEvent(new Event('submit'));
@@ -244,6 +254,7 @@ function persistCityData(cityData, city) {
 
 async function findCity() {
   clearError();
+  currentLocationClicked = false;
 
   const city = document.getElementById('city').value.trim();
   if (city) {
@@ -284,10 +295,11 @@ async function findLoc() {
     persistCityData(currentCityData, currentCityData.name);
   } catch (err) {
     currentCityData = {
-      name: "Unknown location",
+      name: currentLocationClicked ? "Current location" : "Unknown location",
       lat, lon,
       timezone: formatOffset(Math.round(lon / 15) * 60),
     };
+    currentLocationClicked = false;
   }
 }
 
